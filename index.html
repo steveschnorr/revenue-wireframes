@@ -646,7 +646,7 @@ body {
           <div class="blocker-body">
             <div class="blocker-name">Your role can't move this opportunity</div>
             <div class="blocker-hint">This opp was originally owned by Self Service. Moving it requires permissions your profile doesn't include.</div>
-            <button class="btn-request" onclick="requestAccess(this)">Request access</button>
+            <button class="btn-request" onclick="requestAccess(this)">Notify ops team</button>
           </div>
         </div>
       </div>
@@ -814,12 +814,12 @@ function requestAccess(btn) {
   btn.textContent = 'Requesting...';
   btn.disabled = true;
   setTimeout(() => {
-    btn.textContent = 'Request sent - ops team notified';
+    btn.textContent = 'Ops team notified - they\'ll move it for you';
     btn.style.background = 'var(--green-light)';
     btn.style.color = 'var(--green)';
     btn.style.borderColor = 'var(--green-border)';
     const toast = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = 'Access request submitted';
+    document.getElementById('toast-msg').textContent = 'Ops team notified';
     toast.classList.add('visible');
     setTimeout(() => toast.classList.remove('visible'), 2500);
   }, 600);
