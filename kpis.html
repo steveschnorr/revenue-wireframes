@@ -1,279 +1,251 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>One Front Door - KPIs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --surface: #f3f4f6; --card: #fff; --border: #e5e7eb; --border-sub: #f0f1f3;
-  --t1: #0f172a; --t2: #374151; --t3: #6b7280; --t4: #9ca3af; --t5: #d1d5db;
-  --red: #dc2626; --red-bg: #fef2f2;
-  --green: #16a34a; --green-bg: #f0fdf4;
-  --amber: #d97706; --amber-bg: #fffbeb;
-  --blue: #2563eb; --blue-bg: #eff6ff;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --bg:#faf8f5;--card:#fff;--ink:#1a1612;--ink-2:#3d352b;--ink-3:#7a6e5e;--ink-4:#b0a590;--ink-5:#d4cbbe;
+  --rule:#e8e0d4;--rule-soft:#f0ebe3;--hover:rgba(26,22,18,0.04);
+  --accent:#7a2e1f;--accent-hover:#5a1e10;
+  --red:#b42318;--red-bg:#fef0ee;--green:#1f7a4d;--green-bg:#edf7f1;--amber:#b54708;--amber-bg:#fef6ee;--blue:#2b5fa8;--blue-bg:#eef3fb;
+  --radius:8px;--radius-sm:4px;--ease:cubic-bezier(0.25,0.1,0.25,1);--dur:0.15s;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--t1); padding: 32px 16px; -webkit-font-smoothing: antialiased; }
-.page { max-width: 800px; margin: 0 auto; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Inter Tight',-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--ink); padding:0 var(--s5) var(--s8); -webkit-font-smoothing:antialiased; }
+.page { max-width:720px; margin:0 auto; }
 
-/* Header */
-.hdr { text-align: center; margin-bottom: 32px; }
-.hdr h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
-.hdr p { font-size: 14px; color: var(--t3); margin-top: 6px; }
+.eyebrow { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:var(--ink-4); letter-spacing:0.3px; padding:20px 0 var(--s7); border-top:2px solid var(--accent); }
 
-/* Hero stat */
-.hero { display: flex; gap: 2px; margin-bottom: 28px; border-radius: 16px; overflow: hidden; }
-.hero-stat { flex: 1; padding: 24px 20px; text-align: center; background: var(--card); }
-.hero-stat:first-child { border-radius: 16px 0 0 16px; }
-.hero-stat:last-child { border-radius: 0 16px 16px 0; }
-.hero-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--t4); }
-.hero-val { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; margin-top: 4px; }
-.hero-sub { font-size: 12px; color: var(--t4); margin-top: 2px; }
-.hero-val.red { color: var(--red); }
-.hero-val.green { color: var(--green); }
-.hero-val.blue { color: var(--blue); }
+.section { margin-bottom:var(--s8); }
+.section-hdr { display:flex; align-items:baseline; gap:var(--s2); margin-bottom:var(--s5); }
+.section-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--accent); }
+.section-title { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.5px; }
 
-/* Section */
-.section { margin-bottom: 24px; }
-.section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--t4); margin-bottom: 10px; padding-left: 4px; }
+.t-display { font-size:48px; font-weight:700; letter-spacing:-0.045em; line-height:1.05; }
+.t-body { font-size:15px; font-weight:400; line-height:1.6; color:var(--ink-2); }
+.t-label { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:var(--s2); }
 
-/* Cards */
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
-
-/* Pattern bars */
-.patterns { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.pat { padding: 14px 20px; display: flex; align-items: center; gap: 16px; }
-.pat + .pat { border-top: 1px solid var(--border-sub); }
-.pat-name { width: 140px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-.pat-bar-wrap { flex: 1; position: relative; height: 24px; background: var(--border-sub); border-radius: 4px; overflow: hidden; }
-.pat-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
-.pat-bar.red { background: var(--red); }
-.pat-bar.amber { background: var(--amber); }
-.pat-bar.green { background: var(--green); }
-.pat-bar-label { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; }
-.pat-target { width: 80px; text-align: right; font-size: 12px; color: var(--green); font-weight: 600; flex-shrink: 0; }
-
-/* KPI rows */
-.kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; border-radius: 14px; overflow: hidden; }
-.kpi { background: var(--card); padding: 20px; }
-.kpi-icon { font-size: 18px; margin-bottom: 8px; }
-.kpi-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
-.kpi-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; }
-.kpi-label { font-size: 12px; color: var(--t3); }
-.kpi-val { font-size: 13px; font-weight: 700; }
-.kpi-val.red { color: var(--red); }
-.kpi-val.green { color: var(--green); }
-.kpi-val.amber { color: var(--amber); }
-.kpi-divider { height: 1px; background: var(--border-sub); margin: 6px 0; }
+/* Hero stats */
+.hero { display:flex; gap:3px; margin-bottom:var(--s5); }
+.hero-stat { flex:1; background:var(--card); padding:var(--s5) 20px; border-radius:var(--radius); }
+.hero-label { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.4px; }
+.hero-val { font-size:52px; font-weight:700; letter-spacing:-0.04em; margin-top:var(--s2); line-height:1; font-variant-numeric:tabular-nums; }
+.hero-unit { font-size:22px; font-weight:500; color:var(--ink-4); margin-left:1px; }
+.hero-sub { font-size:12px; color:var(--ink-4); margin-top:var(--s2); font-weight:500; }
 
 /* Ecosystem comparison */
-.eco { display: flex; gap: 2px; border-radius: 14px; overflow: hidden; }
-.eco-col { flex: 1; background: var(--card); padding: 20px; text-align: center; }
-.eco-name { font-size: 12px; font-weight: 700; color: var(--t3); }
-.eco-val { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-top: 6px; }
-.eco-unit { font-size: 12px; color: var(--t4); }
-.eco-detail { font-size: 11px; color: var(--t4); margin-top: 6px; }
-.eco-bar { height: 4px; border-radius: 2px; margin-top: 10px; }
+.eco { display:flex; gap:3px; margin-bottom:var(--s5); border-radius:var(--radius); overflow:hidden; }
+.eco-col { flex:1; background:var(--card); padding:20px; text-align:center; }
+.eco-name { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.3px; }
+.eco-val { font-size:36px; font-weight:700; letter-spacing:-0.03em; margin-top:var(--s2); line-height:1; font-variant-numeric:tabular-nums; }
+.eco-unit { font-size:16px; font-weight:500; color:var(--ink-4); }
+.eco-detail { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-4); margin-top:var(--s3); line-height:1.5; }
+.eco-bar { height:3px; border-radius:2px; margin-top:var(--s3); }
 
-/* Impact row */
-.impact { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.imp { padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
-.imp + .imp { border-top: 1px solid var(--border-sub); }
-.imp-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; flex-shrink: 0; }
-.imp-icon.green { background: var(--green); }
-.imp-icon.blue { background: var(--blue); }
-.imp-icon.amber { background: var(--amber); }
-.imp-body { flex: 1; }
-.imp-name { font-size: 14px; font-weight: 600; }
-.imp-detail { font-size: 12px; color: var(--t3); margin-top: 2px; }
-.imp-metric { text-align: right; flex-shrink: 0; }
-.imp-from { font-size: 12px; color: var(--red); font-weight: 600; }
-.imp-to { font-size: 12px; color: var(--green); font-weight: 600; }
-.imp-arrow { font-size: 10px; color: var(--t4); margin: 0 2px; }
+/* Pattern bars */
+.bars { background:var(--card); border-radius:var(--radius); padding:20px; }
+.bar { display:flex; align-items:center; gap:var(--s3); margin-bottom:var(--s3); }
+.bar:last-child { margin-bottom:0; }
+.bar-label { width:110px; font-size:13px; font-weight:600; color:var(--ink-2); text-align:right; flex-shrink:0; }
+.bar-track { flex:1; height:18px; background:var(--rule-soft); border-radius:3px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:3px; transition:width 0.3s var(--ease); }
+.bar-val { width:52px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--ink-2); flex-shrink:0; }
+.bar-target { width:52px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--green); flex-shrink:0; text-align:right; }
 
-.footer { text-align: center; font-size: 11px; color: var(--t5); margin-top: 24px; }
+/* Pillars */
+.pillars { display:flex; gap:3px; margin-bottom:var(--s5); }
+.pillar { flex:1; background:var(--card); padding:20px; border-radius:var(--radius); }
+.pillar-icon { font-size:20px; margin-bottom:var(--s3); }
+.pillar-title { font-size:15px; font-weight:700; margin-bottom:var(--s4); letter-spacing:-0.01em; }
+.pillar-row { display:flex; justify-content:space-between; align-items:baseline; padding:var(--s1) 0; }
+.pillar-label { font-size:12px; color:var(--ink-3); }
+.pillar-val { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; }
+.pillar-divider { height:1px; background:var(--rule-soft); margin:var(--s2) 0; }
+
+/* Impact rows */
+.impact { background:var(--card); border-radius:var(--radius); overflow:hidden; }
+.imp { padding:var(--s4) 20px; display:flex; align-items:center; gap:var(--s4); transition:background var(--dur) var(--ease); }
+.imp:hover { background:var(--hover); }
+.imp + .imp { border-top:1px solid var(--rule-soft); }
+.imp-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--accent); width:20px; flex-shrink:0; }
+.imp-body { flex:1; }
+.imp-name { font-size:14px; font-weight:600; }
+.imp-detail { font-size:12px; color:var(--ink-3); margin-top:2px; }
+.imp-metric { text-align:right; flex-shrink:0; font-family:'JetBrains Mono',monospace; }
+.imp-from { font-size:12px; font-weight:600; color:var(--red); }
+.imp-to { font-size:12px; font-weight:600; color:var(--green); }
+.imp-arrow { font-size:10px; color:var(--ink-4); margin:2px 0; }
+
+/* Slack signal */
+.slack-card { background:var(--card); border-radius:var(--radius); padding:20px; display:flex; gap:var(--s5); }
+.slack-stat { flex:1; }
+.slack-val { font-size:28px; font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
+.slack-label { font-size:12px; color:var(--ink-3); margin-top:2px; }
+
+.footer { margin-top:var(--s8); padding-top:20px; border-top:2px solid var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-4); display:flex; justify-content:space-between; }
+
+@media (max-width:600px) {
+  .hero,.pillars,.eco { flex-direction:column; }
+  .hero-val { font-size:40px; }
+  .t-display { font-size:36px; }
+}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="hdr">
-    <h1>One Front Door for Revenue</h1>
-    <p>KPI framework and baseline. One metric: median time from request to resolution.</p>
+  <div class="eyebrow">GTME / KPI FRAMEWORK / SEP 2026</div>
+
+  <div class="section">
+    <div class="t-display">Baseline &amp; Targets</div>
+    <div class="t-body" style="max-width:520px; margin-top:var(--s4);">One metric: median time from request to resolution. Measured the same way across every channel and every pattern. Here's where we are and where we're going.</div>
   </div>
 
-  <!-- Hero stats -->
-  <div class="hero">
-    <div class="hero-stat">
-      <div class="hero-label">BOPS today</div>
-      <div class="hero-val red">49.6h</div>
-      <div class="hero-sub">Median resolution</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-label">Best in ecosystem</div>
-      <div class="hero-val blue">0h</div>
-      <div class="hero-sub">IT-Request median</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-label">Our target</div>
-      <div class="hero-val green">&lt;1m</div>
-      <div class="hero-sub">Deal Pulse patterns</div>
+  <!-- Hero -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">i.</div><div class="section-title">The headline</div></div>
+    <div class="hero">
+      <div class="hero-stat">
+        <div class="hero-label">BOPS today</div>
+        <div class="hero-val" style="color:var(--red);">49.6<span class="hero-unit">h</span></div>
+        <div class="hero-sub">Median resolution</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-label">Benchmark</div>
+        <div class="hero-val" style="color:var(--blue);">0<span class="hero-unit">h</span></div>
+        <div class="hero-sub">IT-Request median</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-label">Target</div>
+        <div class="hero-val" style="color:var(--green);">&lt;1<span class="hero-unit">m</span></div>
+        <div class="hero-sub">Deal Pulse patterns</div>
+      </div>
     </div>
   </div>
 
   <!-- Ecosystem -->
   <div class="section">
-    <div class="section-title">Across the ecosystem (last 90 days)</div>
+    <div class="section-hdr"><div class="section-num">ii.</div><div class="section-title">Across the ecosystem</div></div>
     <div class="eco">
       <div class="eco-col">
         <div class="eco-name">IT-Request</div>
-        <div class="eco-val" style="color: var(--green);">0h</div>
-        <div class="eco-unit">median</div>
-        <div class="eco-detail">74% under 1hr &middot; 0% over 72hr</div>
-        <div class="eco-bar" style="background: var(--green);"></div>
+        <div class="eco-val" style="color:var(--green);">0<span class="eco-unit">h</span></div>
+        <div class="eco-detail">74% under 1hr<br>0% over 72hr</div>
+        <div class="eco-bar" style="background:var(--green);"></div>
       </div>
       <div class="eco-col">
         <div class="eco-name">Workers' Comp</div>
-        <div class="eco-val" style="color: var(--amber);">16.4h</div>
-        <div class="eco-unit">median</div>
-        <div class="eco-detail">21% under 1hr &middot; 6% over 72hr</div>
-        <div class="eco-bar" style="background: var(--amber);"></div>
+        <div class="eco-val" style="color:var(--amber);">16.4<span class="eco-unit">h</span></div>
+        <div class="eco-detail">21% under 1hr<br>6% over 72hr</div>
+        <div class="eco-bar" style="background:var(--amber);"></div>
       </div>
       <div class="eco-col">
         <div class="eco-name">BOPS</div>
-        <div class="eco-val" style="color: var(--red);">49.6h</div>
-        <div class="eco-unit">median</div>
-        <div class="eco-detail">17% under 1hr &middot; 45% over 72hr</div>
-        <div class="eco-bar" style="background: var(--red);"></div>
+        <div class="eco-val" style="color:var(--red);">49.6<span class="eco-unit">h</span></div>
+        <div class="eco-detail">17% under 1hr<br>45% over 72hr</div>
+        <div class="eco-bar" style="background:var(--red);"></div>
       </div>
     </div>
   </div>
 
-  <!-- Pattern breakdown with bars -->
+  <!-- Pattern breakdown -->
   <div class="section">
-    <div class="section-title">BOPS by pattern (median hours to resolve)</div>
-    <div class="patterns">
-      <div class="pat">
-        <div class="pat-name">HIQ/Onboarding</div>
-        <div class="pat-bar-wrap"><div class="pat-bar green" style="width: 2%;"><span class="pat-bar-label">3.1h</span></div></div>
-        <div class="pat-target">&rarr; &lt;1m</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">DocuSign</div>
-        <div class="pat-bar-wrap"><div class="pat-bar green" style="width: 3%;"><span class="pat-bar-label">4.3h</span></div></div>
-        <div class="pat-target">&rarr; &lt;1m</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">Opp Lifecycle</div>
-        <div class="pat-bar-wrap"><div class="pat-bar amber" style="width: 12%;"><span class="pat-bar-label">17.1h</span></div></div>
-        <div class="pat-target">&rarr; &lt;1m</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">Uncategorized</div>
-        <div class="pat-bar-wrap"><div class="pat-bar red" style="width: 55%;"><span class="pat-bar-label">79h</span></div></div>
-        <div class="pat-target">&rarr; classify</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">Access</div>
-        <div class="pat-bar-wrap"><div class="pat-bar red" style="width: 79%;"><span class="pat-bar-label">113.5h</span></div></div>
-        <div class="pat-target">&rarr; &lt;4h</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">Attribution</div>
-        <div class="pat-bar-wrap"><div class="pat-bar red" style="width: 82%;"><span class="pat-bar-label">118.5h</span></div></div>
-        <div class="pat-target">&rarr; &lt;4h</div>
-      </div>
-      <div class="pat">
-        <div class="pat-name">Merge</div>
-        <div class="pat-bar-wrap"><div class="pat-bar red" style="width: 100%;"><span class="pat-bar-label">259.4h</span></div></div>
-        <div class="pat-target">&rarr; &lt;24h</div>
-      </div>
+    <div class="section-hdr"><div class="section-num">iii.</div><div class="section-title">BOPS by pattern</div></div>
+    <div class="t-label">Median hours to resolve (last 90 days, 100 tickets)</div>
+    <div class="bars">
+      <div class="bar"><div class="bar-label">HIQ</div><div class="bar-track"><div class="bar-fill" style="width:1.2%;background:var(--green);"></div></div><div class="bar-val">3.1h</div><div class="bar-target">&rarr; &lt;1m</div></div>
+      <div class="bar"><div class="bar-label">DocuSign</div><div class="bar-track"><div class="bar-fill" style="width:1.7%;background:var(--green);"></div></div><div class="bar-val">4.3h</div><div class="bar-target">&rarr; &lt;1m</div></div>
+      <div class="bar"><div class="bar-label">Opp Lifecycle</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:var(--amber);"></div></div><div class="bar-val">17.1h</div><div class="bar-target">&rarr; &lt;1m</div></div>
+      <div class="bar"><div class="bar-label">Uncategorized</div><div class="bar-track"><div class="bar-fill" style="width:30.5%;background:var(--red);"></div></div><div class="bar-val">79h</div><div class="bar-target">&rarr; classify</div></div>
+      <div class="bar"><div class="bar-label">Access</div><div class="bar-track"><div class="bar-fill" style="width:43.8%;background:var(--red);"></div></div><div class="bar-val">113.5h</div><div class="bar-target">&rarr; &lt;4h</div></div>
+      <div class="bar"><div class="bar-label">Attribution</div><div class="bar-track"><div class="bar-fill" style="width:45.7%;background:var(--red);"></div></div><div class="bar-val">118.5h</div><div class="bar-target">&rarr; &lt;4h</div></div>
+      <div class="bar"><div class="bar-label">Merge</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--red);"></div></div><div class="bar-val">259.4h</div><div class="bar-target">&rarr; &lt;24h</div></div>
+    </div>
+  </div>
+
+  <!-- Slack signal -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">iv.</div><div class="section-title">Slack shadow queue</div></div>
+    <div class="t-body" style="margin-bottom:var(--s4);">The volume that never becomes a ticket. Growing faster than Jira.</div>
+    <div class="slack-card">
+      <div class="slack-stat"><div class="slack-val" style="color:var(--ink);">32</div><div class="slack-label">Slack requests/week</div></div>
+      <div class="slack-stat"><div class="slack-val" style="color:var(--amber);">+28%</div><div class="slack-label">Week-over-week</div></div>
+      <div class="slack-stat"><div class="slack-val" style="color:var(--ink);">0.29</div><div class="slack-label">Slack-to-BOPS ratio</div></div>
+      <div class="slack-stat"><div class="slack-val" style="color:var(--red);">?</div><div class="slack-label">Resolution time</div></div>
     </div>
   </div>
 
   <!-- Three pillars -->
   <div class="section">
-    <div class="section-title">Three pillars</div>
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="kpi-icon">&#x26A1;</div>
-        <div class="kpi-title">Fast</div>
-        <div class="kpi-row"><span class="kpi-label">Today (median)</span><span class="kpi-val red">49.6h</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">Phase 1</span><span class="kpi-val green">&lt;1m</span></div>
-        <div class="kpi-row"><span class="kpi-label">(self-serve patterns)</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">Phase 2</span><span class="kpi-val green">&lt;4h</span></div>
-        <div class="kpi-row"><span class="kpi-label">(all patterns)</span></div>
+    <div class="section-hdr"><div class="section-num">v.</div><div class="section-title">Three pillars</div></div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-title">Fast</div>
+        <div class="pillar-row"><span class="pillar-label">Today</span><span class="pillar-val" style="color:var(--red);">49.6h</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">&lt;1m</span></div>
+        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">self-serve patterns</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Phase 2</span><span class="pillar-val" style="color:var(--green);">&lt;4h</span></div>
+        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">all patterns</span></div>
       </div>
-      <div class="kpi">
-        <div class="kpi-icon">&#x1F3AF;</div>
-        <div class="kpi-title">Accurate</div>
-        <div class="kpi-row"><span class="kpi-label">Data freshness</span><span class="kpi-val red">24h lag</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">Phase 1</span><span class="kpi-val green">Real-time</span></div>
-        <div class="kpi-row"><span class="kpi-label">(direct SF API)</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">Reopened tickets</span><span class="kpi-val green">&lt;5%</span></div>
+      <div class="pillar">
+        <div class="pillar-title">Accurate</div>
+        <div class="pillar-row"><span class="pillar-label">Data lag</span><span class="pillar-val" style="color:var(--red);">24h</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">Real-time</span></div>
+        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">direct SF API</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Reopened</span><span class="pillar-val" style="color:var(--green);">&lt;5%</span></div>
       </div>
-      <div class="kpi">
-        <div class="kpi-icon">&#x1F512;</div>
-        <div class="kpi-title">Dependable</div>
-        <div class="kpi-row"><span class="kpi-label">Tracked</span><span class="kpi-val red">Jira only</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">Phase 1</span><span class="kpi-val green">100%</span></div>
-        <div class="kpi-row"><span class="kpi-label">(every channel)</span></div>
-        <div class="kpi-divider"></div>
-        <div class="kpi-row"><span class="kpi-label">No action &gt;24h</span><span class="kpi-val green">&lt;5%</span></div>
+      <div class="pillar">
+        <div class="pillar-title">Dependable</div>
+        <div class="pillar-row"><span class="pillar-label">Tracked</span><span class="pillar-val" style="color:var(--red);">Jira only</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">100%</span></div>
+        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">every channel</span></div>
+        <div class="pillar-divider"></div>
+        <div class="pillar-row"><span class="pillar-label">Stale &gt;24h</span><span class="pillar-val" style="color:var(--green);">&lt;5%</span></div>
       </div>
     </div>
   </div>
 
   <!-- What moves the numbers -->
   <div class="section">
-    <div class="section-title">What moves the numbers</div>
+    <div class="section-hdr"><div class="section-num">vi.</div><div class="section-title">What moves the numbers</div></div>
     <div class="impact">
       <div class="imp">
-        <div class="imp-icon green">1</div>
-        <div class="imp-body">
-          <div class="imp-name">Deal Pulse on every opp</div>
-          <div class="imp-detail">Opp lifecycle, DocuSign, HIQ - 45 tickets/quarter. Ticket never filed.</div>
-        </div>
-        <div class="imp-metric">
-          <div class="imp-from">17.1h</div>
-          <div class="imp-arrow">&darr;</div>
-          <div class="imp-to">0</div>
-        </div>
+        <div class="imp-num">01</div>
+        <div class="imp-body"><div class="imp-name">Deal Pulse on every opp</div><div class="imp-detail">Opp lifecycle, DocuSign, HIQ. 45 tickets/quarter never filed.</div></div>
+        <div class="imp-metric"><div class="imp-from">17.1h</div><div class="imp-arrow">&darr;</div><div class="imp-to">0</div></div>
       </div>
       <div class="imp">
-        <div class="imp-icon blue">2</div>
-        <div class="imp-body">
-          <div class="imp-name">Bot with live data</div>
-          <div class="imp-detail">Access, uncategorized - 49 tickets/quarter. Instant classification + context.</div>
-        </div>
-        <div class="imp-metric">
-          <div class="imp-from">113.5h</div>
-          <div class="imp-arrow">&darr;</div>
-          <div class="imp-to">&lt;1m</div>
-        </div>
+        <div class="imp-num">02</div>
+        <div class="imp-body"><div class="imp-name">Bot with live data</div><div class="imp-detail">Access, uncategorized. 49 tickets/quarter. Instant classification + context.</div></div>
+        <div class="imp-metric"><div class="imp-from">113.5h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;1m</div></div>
       </div>
       <div class="imp">
-        <div class="imp-icon amber">3</div>
-        <div class="imp-body">
-          <div class="imp-name">Operator decision cards</div>
-          <div class="imp-detail">Attribution, merge - 6 tickets/quarter. Investigation already done.</div>
-        </div>
-        <div class="imp-metric">
-          <div class="imp-from">118.5h</div>
-          <div class="imp-arrow">&darr;</div>
-          <div class="imp-to">&lt;4h</div>
-        </div>
+        <div class="imp-num">03</div>
+        <div class="imp-body"><div class="imp-name">Operator decision cards</div><div class="imp-detail">Attribution, merge. 6 tickets/quarter. Investigation already done.</div></div>
+        <div class="imp-metric"><div class="imp-from">118.5h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;4h</div></div>
+      </div>
+      <div class="imp">
+        <div class="imp-num">04</div>
+        <div class="imp-body"><div class="imp-name">Kill the BOPS portal</div><div class="imp-detail">One channel, one measurement. No more unmeasured shadow queue.</div></div>
+        <div class="imp-metric"><div class="imp-from">49.6h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;4h</div></div>
       </div>
     </div>
   </div>
 
-  <div class="footer">Baseline: 100 resolved BOPS tickets, last 90 days, via Jira API. Sep 22, 2026.</div>
+  <div class="footer">
+    <span>GTME / KPI FRAMEWORK / v2</span>
+    <span>100 resolved BOPS tickets, 90 days, Jira API &middot; Sep 22, 2026</span>
+  </div>
 
 </div>
 </body>
