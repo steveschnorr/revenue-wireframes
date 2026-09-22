@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Pulse</title>
+<style>
+:root {
+  --surface: #f3f4f6; --card: #fff; --border: #e5e7eb; --border-sub: #f0f1f3;
+  --t1: #0f172a; --t2: #374151; --t3: #6b7280; --t4: #9ca3af; --t5: #d1d5db;
+  --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
+  --green: #16a34a; --green-bg: #f0fdf4; --green-border: #bbf7d0;
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-border: #fde68a;
+  --blue: #2563eb; --blue-bg: #eff6ff;
+  --r: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--t1); padding: 32px 16px; -webkit-font-smoothing: antialiased; }
+
+.page { max-width: 540px; margin: 0 auto; }
+
+/* Context bar - what opp is this */
+.context { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.context-name { font-size: 15px; font-weight: 700; }
+.context-meta { font-size: 12px; color: var(--t3); margin-top: 2px; }
+.context-stage { text-align: right; }
+.context-stage-label { font-size: 10px; color: var(--t4); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+.context-stage-val { font-size: 13px; font-weight: 700; margin-top: 1px; }
+
+/* Scenario picker */
+.picker { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; gap: 2px; margin-bottom: 16px; }
+.pick { flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; background: transparent; color: var(--t4); cursor: pointer; font-family: inherit; text-align: center; transition: all 0.15s; }
+.pick:hover { color: var(--t2); background: var(--surface); }
+.pick.active { background: var(--t1); color: #fff; }
+
+/* Card */
+.c { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+
+/* Color band */
+.band { height: 4px; }
+.band.red { background: var(--red); } .band.amber { background: var(--amber); } .band.green { background: var(--green); }
+
+/* Header */
+.hdr { padding: 20px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+.hdr-left { display: flex; align-items: center; gap: 10px; }
+.pulse { width: 10px; height: 10px; border-radius: 50%; }
+.pulse.red { background: var(--red); box-shadow: 0 0 0 3px var(--red-bg); }
+.pulse.amber { background: var(--amber); box-shadow: 0 0 0 3px var(--amber-bg); }
+.pulse.green { background: var(--green); box-shadow: 0 0 0 3px var(--green-bg); animation: breathe 2.5s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { box-shadow: 0 0 0 3px var(--green-bg); } 50% { box-shadow: 0 0 0 7px rgba(22,163,74,0.06); } }
+.hdr-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--t4); }
+.hdr-status { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; padding: 10px 20px 14px; }
+.hdr-status.red { color: var(--red); } .hdr-status.amber { color: var(--amber); } .hdr-status.green { color: var(--green); }
+
+/* Metrics bar */
+.mbar { display: flex; background: #fafbfc; border-top: 1px solid var(--border-sub); border-bottom: 1px solid var(--border-sub); }
+.m { flex: 1; padding: 14px 16px; text-align: center; }
+.m + .m { border-left: 1px solid var(--border-sub); }
+.m-val { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.m-val.red { color: var(--red); } .m-val.amber { color: var(--amber); } .m-val.green { color: var(--green); } .m-val.n { color: var(--t1); }
+.m-label { font-size: 10px; color: var(--t4); margin-top: 2px; font-weight: 500; }
+
+.div { height: 1px; background: var(--border-sub); margin: 0 20px; }
+
+/* Section */
+.g { padding: 16px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--t4); }
+
+/* Signal row */
+.s { padding: 12px 20px; display: flex; align-items: flex-start; gap: 14px; }
+.s-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; color: #fff; }
+.s-icon.red { background: var(--red); } .s-icon.amber { background: var(--amber); } .s-icon.green { background: var(--green); } .s-icon.blue { background: var(--blue); }
+.s-body { flex: 1; padding-top: 3px; }
+.s-name { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.s-val { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 12px; color: var(--t3); background: var(--surface); padding: 3px 8px; border-radius: 4px; }
+.s-val strong { color: var(--t2); }
+.s-why { font-size: 13px; color: var(--t3); margin-top: 4px; line-height: 1.45; }
+.s-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.src { display: inline-flex; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.src.sf { background: #eef2ff; color: #4338ca; }
+.src.snow { background: #ecfeff; color: #0e7490; }
+.src.jira { background: #fff7ed; color: #c2410c; }
+.s-action { font-size: 12px; color: var(--blue); font-weight: 500; cursor: pointer; }
+.s-action:hover { text-decoration: underline; }
+
+/* Edit control */
+.s-edit { margin-top: 8px; display: flex; gap: 8px; }
+.s-edit input, .s-edit select { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--t1); outline: none; }
+.s-edit input:focus, .s-edit select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.s-edit select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+/* Save footer */
+.foot { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; opacity: 0; max-height: 0; overflow: hidden; transition: all 0.25s; }
+.foot.vis { opacity: 1; max-height: 60px; }
+.foot-t { font-size: 12px; color: var(--t3); }
+.foot-t strong { color: var(--blue); }
+.btn-s { padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; font-family: inherit; border: none; cursor: pointer; background: var(--blue); color: #fff; }
+.btn-c { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; font-family: inherit; border: 1px solid var(--border); cursor: pointer; background: var(--card); color: var(--t2); margin-right: 8px; }
+
+/* No-edit link */
+.s-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 12px; color: var(--t2); background: var(--surface); padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+.s-link:hover { background: var(--border-sub); }
+
+/* Collapsed passing checks */
+.more { padding: 12px 20px 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.more:hover { background: #fafbfc; }
+.more-t { font-size: 12px; color: var(--t5); font-weight: 500; }
+.more-a { font-size: 8px; color: var(--t5); transition: transform 0.2s; display: inline-block; }
+.more-a.open { transform: rotate(90deg); }
+.det { max-height: 0; overflow: hidden; transition: max-height 0.2s; }
+.det.open { max-height: 600px; }
+.det-i { padding: 3px 20px 3px 42px; font-size: 12px; color: var(--t4); display: flex; align-items: center; gap: 6px; }
+.det-i:last-child { padding-bottom: 16px; }
+
+/* OK state */
+.ok { padding: 28px 20px; text-align: center; }
+.ok-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--green-bg); border: 2px solid var(--green-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 22px; }
+.ok-text { font-size: 17px; font-weight: 700; color: var(--green); }
+.ok-sub { font-size: 13px; color: var(--t3); margin-top: 4px; line-height: 1.4; }
+
+/* Permission banner */
+.perm { margin: 12px 20px; padding: 14px 16px; background: var(--amber-bg); border: 1px solid var(--amber-border); border-radius: 10px; }
+.perm-t { font-size: 14px; font-weight: 600; color: var(--amber); }
+.perm-d { font-size: 13px; color: var(--t3); margin-top: 4px; line-height: 1.4; }
+
+.ts { padding: 6px 20px 14px; font-size: 10px; color: var(--t5); text-align: right; }
+
+/* Intro */
+.intro { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 20px; }
+.intro h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.intro p { font-size: 13px; color: var(--t3); margin-top: 6px; line-height: 1.5; }
+.intro-tag { display: inline-flex; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-top: 10px; background: var(--blue-bg); color: var(--blue); }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="intro">
+    <h1>Deal Pulse</h1>
+    <p>A real-time Opp Doctor on every opportunity. Always on, always current, right on the record page. No Slack command, no context switch, no stale data.</p>
+    <p>Replaces the Opp Doctor Zapier bot (which nobody uses) and extends the Onboarding Check button (which only catches field-level issues). Covers the full picture: validation rules, Apex trigger logic, related record state, and cross-system signals.</p>
+    <div class="intro-tag">5 scenarios below - interactive</div>
+  </div>
+
+  <div class="picker">
+    <button class="pick active" onclick="show(0)">PEO Blocked</button>
+    <button class="pick" onclick="show(1)">PEO Warning</button>
+    <button class="pick" onclick="show(2)">Payroll</button>
+    <button class="pick" onclick="show(3)">Permission</button>
+    <button class="pick" onclick="show(4)">Healthy</button>
+  </div>
+
+  <!-- 0: PEO - blocked with multiple issues -->
+  <div class="sc" id="s0">
+    <div class="context">
+      <div><div class="context-name">Acme Corp - New Business</div><div class="context-meta">$285,000 ARR &middot; PEO Plus &middot; Sarah Chen</div></div>
+      <div class="context-stage"><div class="context-stage-label">Stage</div><div class="context-stage-val">Negotiate &rarr; Onboard</div></div>
+    </div>
+    <div class="c">
+      <div class="band red"></div>
+      <div class="hdr"><div class="hdr-left"><div class="pulse red"></div><div class="hdr-title">Deal Pulse</div></div></div>
+      <div class="hdr-status red">Can't move to Onboard</div>
+      <div class="mbar">
+        <div class="m"><div class="m-val red">3</div><div class="m-label">Blockers</div></div>
+        <div class="m"><div class="m-val amber">2</div><div class="m-label">Warnings</div></div>
+        <div class="m"><div class="m-val green">14</div><div class="m-label">Passing</div></div>
+      </div>
+      <div class="g">Blocking Onboard</div>
+      <div class="s"><div class="s-icon red">&#x2715;</div><div class="s-body"><div class="s-name">DocuSign not completed</div><div class="s-val">Current: <strong>Sent</strong> &middot; Needs: <strong>Completed</strong></div><div class="s-why">Envelope sent Sep 14 to David Kim (VP Ops). 8 days waiting.</div><div class="s-row"><span class="src sf">Salesforce</span><a class="s-action">Check DocuSign status &#x2192;</a></div></div></div>
+      <div class="s"><div class="s-icon red">&#x2715;</div><div class="s-body"><div class="s-name">Company ID missing</div><div class="s-val">Current: <strong>empty</strong></div><div class="s-why">The Justworks company must be created before this opp can be handed off to onboarding.</div><div class="s-row"><span class="src sf">Salesforce</span></div><div class="s-edit"><input type="text" placeholder="Enter Company ID" oninput="dirty(0)"></div></div></div>
+      <div class="s"><div class="s-icon red">&#x2715;</div><div class="s-body"><div class="s-name">HU Case rejected by Sales</div><div class="s-val">Current: <strong>Rejected by Sales</strong> &middot; Needs: <strong>Approved</strong></div><div class="s-why">The Health Underwriting Case needs a new submission before this opp can move.</div><div class="s-row"><span class="src sf">Salesforce</span><a class="s-action">Open HU Case &#x2192;</a></div></div></div>
+      <div class="div"></div>
+      <div class="g">Heads up</div>
+      <div class="s"><div class="s-icon amber">!</div><div class="s-body"><div class="s-name">EE count mismatch</div><div class="s-val">WCF: <strong>6</strong> &middot; Opp: <strong>1</strong> &middot; Max difference: <strong>1</strong></div><div class="s-why">The census uploaded to WCF has a different employee count than the Opportunity. Reconcile before DocuSign can be sent.</div><div class="s-row"><span class="src sf">Salesforce</span></div></div></div>
+      <div class="s"><div class="s-icon amber">!</div><div class="s-body"><div class="s-name">BOPS ticket already open</div><div class="s-val">BOPS-14201 &middot; <strong>2 days ago</strong></div><div class="s-why">"Can't move to onboarding" filed by Luke T. Someone is already working on this.</div><div class="s-row"><span class="src jira">Jira</span><a class="s-action">View ticket &#x2192;</a></div></div></div>
+      <div class="div"></div>
+      <div class="foot" id="f0"><div class="foot-t"><strong id="c0">0</strong> fields changed</div><div><button class="btn-c" onclick="reset(0)">Cancel</button><button class="btn-s" onclick="save(0)">Save</button></div></div>
+      <div class="more" onclick="tog(this)"><span class="more-a">&#x25B6;</span><span class="more-t">14 checks passing</span></div>
+      <div class="det">
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> CSA Signed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Bank Account Verified</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Competitors</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Closed Won Reason</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Healthcare Provider</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Pay Frequency</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> States of Operations</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Benefits Discussed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Lives Confirmed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> SUI Assist</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Payroll Processing Timeline</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> 401k Options</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Bulk Upload Completed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Onboarding Notes Reviewed</div>
+      </div>
+      <div class="ts">Live from validation rules + checkStage() &middot; Salesforce + Jira via gateway</div>
+    </div>
+  </div>
+
+  <!-- 1: PEO - warnings only -->
+  <div class="sc" id="s1" style="display:none;">
+    <div class="context">
+      <div><div class="context-name">BRMI</div><div class="context-meta">$142,000 ARR &middot; PEO &middot; Jake Rodriguez</div></div>
+      <div class="context-stage"><div class="context-stage-label">Stage</div><div class="context-stage-val">Evaluate Fit</div></div>
+    </div>
+    <div class="c">
+      <div class="band amber"></div>
+      <div class="hdr"><div class="hdr-left"><div class="pulse amber"></div><div class="hdr-title">Deal Pulse</div></div></div>
+      <div class="hdr-status amber">2 things to watch</div>
+      <div class="mbar">
+        <div class="m"><div class="m-val green">4</div><div class="m-label">Passing</div></div>
+        <div class="m"><div class="m-val amber">2</div><div class="m-label">Warnings</div></div>
+        <div class="m"><div class="m-val n">42d</div><div class="m-label">In stage</div></div>
+      </div>
+      <div class="g">Watch</div>
+      <div class="s"><div class="s-icon amber">!</div><div class="s-body"><div class="s-name">No Decision Maker assigned</div><div class="s-val">Current: <strong>empty</strong></div><div class="s-why">Required before Negotiate. This will become a blocker at the next transition.</div><div class="s-row"><span class="src sf">Salesforce</span></div><div class="s-edit"><input type="text" placeholder="Search contacts..." oninput="dirty(1)"></div></div></div>
+      <div class="s"><div class="s-icon amber">!</div><div class="s-body"><div class="s-name">42 days in Evaluate Fit</div><div class="s-val">Average: <strong>18 days</strong></div><div class="s-why">This deal is taking more than twice the average for PEO opps at this stage.</div><div class="s-row"><span class="src snow">Snowflake</span></div></div></div>
+      <div class="div"></div>
+      <div class="g">Stage transition</div>
+      <div class="s"><div class="s-icon green">&#x2714;</div><div class="s-body"><div class="s-name">Ready for Negotiate</div><div class="s-why">All Evaluate Fit requirements are met. The warnings above are about timing, not stage gates.</div></div></div>
+      <div class="div"></div>
+      <div class="foot" id="f1"><div class="foot-t"><strong id="c1">0</strong> fields changed</div><div><button class="btn-c" onclick="reset(1)">Cancel</button><button class="btn-s" onclick="save(1)">Save</button></div></div>
+      <div class="ts">Live from validation rules + Snowflake &middot; Salesforce + Snowflake via gateway</div>
+    </div>
+  </div>
+
+  <!-- 2: Payroll -->
+  <div class="sc" id="s2" style="display:none;">
+    <div class="context">
+      <div><div class="context-name">Platinum Plumbing & Heating</div><div class="context-meta">$66,000 ARR &middot; Payroll &middot; Maria Park</div></div>
+      <div class="context-stage"><div class="context-stage-label">Stage</div><div class="context-stage-val">Negotiate &rarr; Onboard</div></div>
+    </div>
+    <div class="c">
+      <div class="band red"></div>
+      <div class="hdr"><div class="hdr-left"><div class="pulse red"></div><div class="hdr-title">Deal Pulse</div></div></div>
+      <div class="hdr-status red">2 issues blocking Onboard</div>
+      <div class="mbar">
+        <div class="m"><div class="m-val red">2</div><div class="m-label">Blockers</div></div>
+        <div class="m"><div class="m-val amber">1</div><div class="m-label">Warning</div></div>
+        <div class="m"><div class="m-val green">5</div><div class="m-label">Passing</div></div>
+      </div>
+      <div class="g">Blocking Onboard</div>
+      <div class="s"><div class="s-icon red">&#x2715;</div><div class="s-body"><div class="s-name">Payroll CSA not signed</div><div class="s-val">Current: <strong>false</strong> &middot; Needs: <strong>true</strong></div><div class="s-why">Client Service Agreement must be signed. Part of the Payroll "Triple Check" for auto-progression to Onboard.</div><div class="s-row"><span class="src sf">Salesforce</span></div><div class="s-link">Updated outside Salesforce</div></div></div>
+      <div class="s"><div class="s-icon red">&#x2715;</div><div class="s-body"><div class="s-name">Payroll Company ID missing</div><div class="s-val">Current: <strong>empty</strong></div><div class="s-why">Company must be created in Justworks Payroll before the opp can move.</div><div class="s-row"><span class="src sf">Salesforce</span></div><div class="s-edit"><input type="text" placeholder="Enter Payroll Company ID" oninput="dirty(2)"></div></div></div>
+      <div class="div"></div>
+      <div class="g">Heads up</div>
+      <div class="s"><div class="s-icon amber">!</div><div class="s-body"><div class="s-name">Pending discount approval</div><div class="s-val">Status: <strong>Pending Approval</strong></div><div class="s-why">One Deal Change record is pending. This will block Onboard once the other issues are resolved.</div><div class="s-row"><span class="src sf">Salesforce</span><a class="s-action">View approval &#x2192;</a></div></div></div>
+      <div class="div"></div>
+      <div class="foot" id="f2"><div class="foot-t"><strong id="c2">0</strong> fields changed</div><div><button class="btn-c" onclick="reset(2)">Cancel</button><button class="btn-s" onclick="save(2)">Save</button></div></div>
+      <div class="more" onclick="tog(this)"><span class="more-a">&#x25B6;</span><span class="more-t">5 checks passing</span></div>
+      <div class="det">
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Bank Account Verified</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> States of Operations</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Closed Won Reason</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Competitors</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Processing Timeline</div>
+      </div>
+      <div class="ts">Live from validation rules + checkStage() &middot; Salesforce via gateway</div>
+    </div>
+  </div>
+
+  <!-- 3: Permission -->
+  <div class="sc" id="s3" style="display:none;">
+    <div class="context">
+      <div><div class="context-name">Oakridge Partners</div><div class="context-meta">$310,000 ARR &middot; PEO &middot; Luke Tannenbaum</div></div>
+      <div class="context-stage"><div class="context-stage-label">Stage</div><div class="context-stage-val">Negotiate &rarr; Onboard</div></div>
+    </div>
+    <div class="c">
+      <div class="band amber"></div>
+      <div class="hdr"><div class="hdr-left"><div class="pulse amber"></div><div class="hdr-title">Deal Pulse</div></div></div>
+      <div class="hdr-status amber">Permission required</div>
+      <div class="mbar">
+        <div class="m"><div class="m-val green">18</div><div class="m-label">Passing</div></div>
+        <div class="m"><div class="m-val amber">1</div><div class="m-label">Permission</div></div>
+        <div class="m"><div class="m-val n">0</div><div class="m-label">Tickets</div></div>
+      </div>
+      <div class="perm">
+        <div class="perm-t">Your role can't move this opportunity</div>
+        <div class="perm-d">This opp was originally owned by Self Service. Your Salesforce profile doesn't include the required permission set. All 18 field and case checks are passing - it just needs someone with the right access to move it.</div>
+      </div>
+      <div class="s"><div class="s-icon green">&#x2714;</div><div class="s-body"><div class="s-name">All field and case checks passing</div><div class="s-why">Every requirement is met. The only issue is the permission gap above.</div></div></div>
+      <div class="ts">Live from validation rules + checkStage() &middot; Salesforce via gateway</div>
+    </div>
+  </div>
+
+  <!-- 4: Healthy -->
+  <div class="sc" id="s4" style="display:none;">
+    <div class="context">
+      <div><div class="context-name">Greenfield Labs</div><div class="context-meta">$175,000 ARR &middot; PEO Basic &middot; Sarah Chen</div></div>
+      <div class="context-stage"><div class="context-stage-label">Stage</div><div class="context-stage-val">Negotiate &rarr; Onboard</div></div>
+    </div>
+    <div class="c">
+      <div class="band green"></div>
+      <div class="hdr"><div class="hdr-left"><div class="pulse green"></div><div class="hdr-title">Deal Pulse</div></div></div>
+      <div class="hdr-status green">Ready for Onboard</div>
+      <div class="mbar">
+        <div class="m"><div class="m-val green">18</div><div class="m-label">Passing</div></div>
+        <div class="m"><div class="m-val n">12d</div><div class="m-label">In stage</div></div>
+        <div class="m"><div class="m-val n">0</div><div class="m-label">Tickets</div></div>
+      </div>
+      <div class="ok">
+        <div class="ok-icon">&#x2714;</div>
+        <div class="ok-text">All systems green</div>
+        <div class="ok-sub">Every field check, case status, and validation rule is passing.<br/>No open Jira tickets for this account. Ready to move.</div>
+      </div>
+      <div class="div"></div>
+      <div class="more" onclick="tog(this)"><span class="more-a">&#x25B6;</span><span class="more-t">18 checks passing</span></div>
+      <div class="det">
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> DocuSign Completed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Company ID</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> HU Case Approved</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> CSA Signed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Bank Account Verified</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Bulk Upload Completed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> WC Case Approved</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> EE Difference within range</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> Brokerage Customer Committed</div>
+        <div class="det-i"><span style="color:var(--green)">&#x2714;</span> All remaining PEO fields</div>
+      </div>
+      <div class="ts">Live from validation rules + checkStage() &middot; Salesforce + Jira via gateway</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(i){document.querySelectorAll('.sc').forEach(function(el,j){el.style.display=j===i?'block':'none'});document.querySelectorAll('.pick').forEach(function(b,j){b.className=j===i?'pick active':'pick'})}
+function tog(el){el.nextElementSibling.classList.toggle('open');el.querySelector('.more-a').classList.toggle('open')}
+function dirty(n){var card=document.getElementById('s'+n);var inputs=card.querySelectorAll('input,select');var c=0;inputs.forEach(function(inp){if(inp.tagName==='SELECT'){if(inp.selectedIndex>0)c++}else{if(inp.value.trim())c++}});var f=document.getElementById('f'+n);var l=document.getElementById('c'+n);if(c>0){f.classList.add('vis');l.textContent=c+(c===1?' field':' fields')}else{f.classList.remove('vis')}}
+function reset(n){var card=document.getElementById('s'+n);card.querySelectorAll('input').forEach(function(i){i.value=''});card.querySelectorAll('select').forEach(function(s){s.selectedIndex=0});document.getElementById('f'+n).classList.remove('vis')}
+function save(n){var f=document.getElementById('f'+n);var b=f.querySelector('.btn-s');b.textContent='Saving...';setTimeout(function(){f.classList.remove('vis');b.textContent='Save';var t=document.createElement('div');t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:100';t.textContent='Saved - refreshing Deal Pulse';document.body.appendChild(t);setTimeout(function(){t.remove()},2500)},800)}
+</script>
+</body>
+</html>
