@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTME Design Language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root {
+  /* Spacing scale (4px base) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+
+  /* Light theme */
+  --bg: #faf8f5;
+  --card: #ffffff;
+  --ink: #1a1612;
+  --ink-2: #3d352b;
+  --ink-3: #7a6e5e;
+  --ink-4: #b0a590;
+  --ink-5: #d4cbbe;
+  --rule: #e8e0d4;
+  --rule-soft: #f0ebe3;
+  --hover: rgba(26, 22, 18, 0.04);
+  --active: rgba(26, 22, 18, 0.08);
+  --focus-ring: rgba(122, 46, 31, 0.2);
+
+  --accent: #7a2e1f;
+  --accent-hover: #5a1e10;
+  --accent-wash: #faf0ec;
+
+  --red: #b42318;
+  --red-bg: #fef0ee;
+  --green: #1f7a4d;
+  --green-bg: #edf7f1;
+  --amber: #b54708;
+  --amber-bg: #fef6ee;
+  --blue: #2b5fa8;
+  --blue-bg: #eef3fb;
+
+  --radius: 8px;
+  --radius-sm: 4px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration: 0.15s;
+  --duration-lg: 0.3s;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg: #1a1812;
+  --card: #242118;
+  --ink: #f0ebe3;
+  --ink-2: #d4cbbe;
+  --ink-3: #9e9282;
+  --ink-4: #6e6454;
+  --ink-5: #3d352b;
+  --rule: #332e24;
+  --rule-soft: #2a261e;
+  --hover: rgba(240, 235, 227, 0.06);
+  --active: rgba(240, 235, 227, 0.1);
+  --focus-ring: rgba(156, 80, 64, 0.3);
+  --accent: #c07060;
+  --accent-hover: #d88878;
+  --accent-wash: #2e2018;
+  --red: #e05545;
+  --red-bg: #2e1c18;
+  --green: #3aad6a;
+  --green-bg: #1a2e20;
+  --amber: #e09030;
+  --amber-bg: #2e2418;
+  --blue: #5088cc;
+  --blue-bg: #1a2030;
+}
+
+/* ============ RESET ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter Tight', -apple-system, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0 var(--s5) var(--s8);
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--duration-lg) var(--ease), color var(--duration-lg) var(--ease);
+}
+.page { max-width: 640px; margin: 0 auto; }
+
+/* ============ EYEBROW ============ */
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-4);
+  letter-spacing: 0.3px;
+  padding: 20px 0 var(--s7);
+  border-top: 2px solid var(--accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.theme-toggle {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: var(--ink-5);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--duration) var(--ease);
+}
+.theme-toggle::after {
+  content: '';
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform var(--duration) var(--ease);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(16px); }
+
+/* ============ SECTIONS ============ */
+.section { margin-bottom: var(--s8); }
+.section-hdr { display: flex; align-items: baseline; gap: var(--s2); margin-bottom: var(--s5); }
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: var(--accent);
+}
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============ TYPOGRAPHY ============ */
+.t-display { font-size: 48px; font-weight: 700; letter-spacing: -0.045em; line-height: 1.05; }
+.t-number { font-size: 56px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.t-unit { font-size: 24px; font-weight: 500; color: var(--ink-4); margin-left: 1px; }
+.t-heading { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; }
+.t-body { font-size: 15px; font-weight: 400; line-height: 1.6; color: var(--ink-2); }
+.t-meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink-3); }
+.t-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: var(--s2); }
+.t-row { margin-bottom: var(--s5); }
+
+/* ============ LINKS ============ */
+a, .link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--duration) var(--ease);
+}
+a:hover, .link:hover { color: var(--accent-hover); }
+a:focus-visible, .link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
+
+/* ============ BUTTONS ============ */
+.btn {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: var(--s2) var(--s4);
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration) var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.btn:active { transform: scale(0.97); }
+.btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-secondary { background: var(--card); color: var(--ink-2); border: 1px solid var(--rule); }
+.btn-secondary:hover { background: var(--hover); }
+
+.btn-ghost { background: transparent; color: var(--accent); padding: var(--s2) var(--s3); }
+.btn-ghost:hover { background: var(--accent-wash); }
+
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover { background: #9c1e14; }
+
+/* ============ FORM CONTROLS ============ */
+.input {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+}
+.input::placeholder { color: var(--ink-5); }
+.input:hover { border-color: var(--ink-5); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+.select {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  padding: var(--s2) var(--s3);
+  padding-right: var(--s6);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23b0a590' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+}
+.select:hover { border-color: var(--ink-5); }
+.select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+.toggle {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: var(--ink-5);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--duration) var(--ease);
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: transform var(--duration) var(--ease);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.toggle.on { background: var(--green); }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ============ CARDS ============ */
+.card { background: var(--card); border-radius: var(--radius); padding: var(--s5); margin-bottom: var(--s4); transition: background var(--duration-lg) var(--ease); }
+
+/* ============ STAT TILES ============ */
+.stats { display: flex; gap: 3px; margin-bottom: var(--s5); }
+.stat { flex: 1; background: var(--card); padding: 22px 18px; border-radius: var(--radius); transition: background var(--duration-lg) var(--ease); }
+.stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-val { font-size: 40px; font-weight: 700; letter-spacing: -0.04em; margin-top: var(--s2); line-height: 1; font-variant-numeric: tabular-nums; }
+.stat-unit { font-size: 18px; font-weight: 500; color: var(--ink-4); margin-left: 1px; }
+.stat-sub { font-size: 12px; color: var(--ink-4); margin-top: var(--s2); font-weight: 500; }
+
+/* Loading state */
+.stat.loading .stat-val,
+.stat.loading .stat-sub { background: var(--rule-soft); color: transparent; border-radius: 4px; animation: shimmer 1.5s infinite; }
+@keyframes shimmer {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* ============ SIGNALS ============ */
+.signals { background: var(--card); border-radius: var(--radius); padding: var(--s1) 0; margin-bottom: var(--s5); transition: background var(--duration-lg) var(--ease); }
+.sig { display: flex; align-items: flex-start; gap: 14px; padding: var(--s4) 20px; transition: background var(--duration) var(--ease); }
+.sig:hover { background: var(--hover); }
+.sig + .sig { border-top: 1px solid var(--rule-soft); }
+.sig-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+.sig-name { font-size: 15px; font-weight: 600; line-height: 1.35; }
+.sig-detail { font-size: 13px; color: var(--ink-3); margin-top: 3px; line-height: 1.5; }
+.sig-source { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--ink-4); margin-top: 5px; }
+.sig-action { font-size: 12px; color: var(--accent); font-weight: 600; margin-left: var(--s2); transition: color var(--duration) var(--ease); }
+.sig-action:hover { color: var(--accent-hover); }
+
+/* ============ BARS ============ */
+.bars { background: var(--card); border-radius: var(--radius); padding: 18px 20px; margin-bottom: var(--s5); transition: background var(--duration-lg) var(--ease); }
+.bar { display: flex; align-items: center; gap: var(--s3); margin-bottom: var(--s3); }
+.bar:last-child { margin-bottom: 0; }
+.bar-label { width: 100px; font-size: 13px; font-weight: 600; color: var(--ink-2); text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 16px; background: var(--rule-soft); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width var(--duration-lg) var(--ease); }
+.bar-val { width: 56px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--ink-2); flex-shrink: 0; }
+
+/* ============ STATUS ============ */
+.status-row { display: flex; gap: var(--s2); margin-bottom: var(--s5); flex-wrap: wrap; }
+.status { font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-sm); }
+
+/* ============ TABLE ============ */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.3px; padding: 10px 0; border-bottom: 2px solid var(--rule); }
+.tbl td { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); color: var(--ink-2); }
+.tbl td:first-child { font-weight: 600; color: var(--ink); }
+.tbl tr:hover td { background: var(--hover); }
+.tbl .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; }
+
+/* ============ EMPTY STATE ============ */
+.empty { padding: var(--s7) var(--s5); text-align: center; background: var(--card); border-radius: var(--radius); }
+.empty-icon { font-size: 24px; margin-bottom: var(--s3); opacity: 0.4; }
+.empty-text { font-size: 14px; font-weight: 600; color: var(--ink-3); }
+.empty-sub { font-size: 13px; color: var(--ink-4); margin-top: var(--s1); }
+
+/* ============ TOAST ============ */
+.toast {
+  position: fixed;
+  bottom: var(--s5);
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--ink);
+  color: var(--bg);
+  padding: var(--s3) var(--s5);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: transform var(--duration-lg) var(--ease);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.toast.visible { transform: translateX(-50%) translateY(0); }
+
+/* ============ SAVE FOOTER ============ */
+.save-footer {
+  padding: var(--s3) 20px;
+  background: var(--card);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all var(--duration-lg) var(--ease);
+}
+.save-footer.visible { opacity: 1; max-height: 60px; }
+.save-footer-text { font-size: 12px; color: var(--ink-3); }
+.save-footer-text strong { color: var(--accent); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 560px) {
+  .stats { flex-direction: column; }
+  .stat-val { font-size: 32px; }
+  .t-display { font-size: 36px; }
+  .t-number { font-size: 44px; }
+  .bar-label { width: 72px; font-size: 12px; }
+  .status-row { flex-wrap: wrap; }
+}
+
+/* ============ GUIDE ============ */
+.guide { background: var(--card); border-radius: var(--radius); overflow: hidden; margin-bottom: var(--s5); }
+.guide-row { display: flex; padding: 14px 20px; align-items: baseline; gap: var(--s4); }
+.guide-row + .guide-row { border-top: 1px solid var(--rule-soft); }
+.guide-row:hover { background: var(--hover); }
+.guide-type { width: 140px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.guide-desc { font-size: 13px; color: var(--ink-3); line-height: 1.45; }
+
+/* ============ FOOTER ============ */
+.footer {
+  margin-top: var(--s8);
+  padding-top: 20px;
+  border-top: 2px solid var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-4);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ============ COLOR SWATCHES ============ */
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.sw { width: 72px; }
+.sw-block { width: 72px; height: 44px; border-radius: var(--radius-sm); margin-bottom: var(--s1); transition: transform var(--duration) var(--ease); }
+.sw-block:hover { transform: scale(1.05); }
+.sw-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--ink-3); }
+.sw-hex { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-4); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">
+    <span>GTME / DESIGN LANGUAGE / v3 / SEP 2026</span>
+    <button class="theme-toggle" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'" aria-label="Toggle theme"></button>
+  </div>
+
+  <div class="section">
+    <div class="t-display">Design Language</div>
+    <div class="t-body" style="max-width: 460px; margin-top: var(--s4);">Inter Tight for content. JetBrains Mono for metadata. Warm neutrals, purposeful color, quiet chrome. The system behind everything GTME ships.</div>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">i.</div><div class="section-title">Typography</div></div>
+    <div class="t-row"><div class="t-label">Display</div><div class="t-display">One Front Door</div></div>
+    <div class="t-row"><div class="t-label">Number</div><div class="t-number" style="color: var(--red);">49.6<span class="t-unit">h</span></div></div>
+    <div class="t-row"><div class="t-label">Heading</div><div class="t-heading">Can't move to Onboard</div></div>
+    <div class="t-row"><div class="t-label">Body</div><div class="t-body">The Workers' Comp application hasn't been filed and the Client Service Agreement isn't signed. Once both are complete the stage transition will unblock.</div></div>
+    <div class="t-row"><div class="t-label">Meta</div><div class="t-meta">Acme Corp &middot; PEO Plus &middot; $285K &middot; Negotiate</div></div>
+    <div class="t-row"><div class="t-label">Source</div><div class="t-meta" style="font-size: 10px;">Salesforce &middot; Live from validation rules &middot; Sep 22 2026</div></div>
+  </div>
+
+  <!-- Color -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">ii.</div><div class="section-title">Color</div></div>
+    <div class="t-body" style="margin-bottom: var(--s5);">Warm neutrals as chrome. Oxblood for authorship. Status colors are brighter and hue-separated from the accent. Toggle dark mode above to see the dark palette.</div>
+    <div class="t-label">Chrome</div>
+    <div class="swatches">
+      <div class="sw"><div class="sw-block" style="background: var(--ink);"></div><div class="sw-name">Ink</div><div class="sw-hex">#1a1612</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--ink-2);"></div><div class="sw-name">Secondary</div><div class="sw-hex">#3d352b</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--ink-3);"></div><div class="sw-name">Muted</div><div class="sw-hex">#7a6e5e</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--ink-4);"></div><div class="sw-name">Faint</div><div class="sw-hex">#b0a590</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--card); border: 1px solid var(--rule);"></div><div class="sw-name">Card</div><div class="sw-hex">#ffffff</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--bg); border: 1px solid var(--rule);"></div><div class="sw-name">Paper</div><div class="sw-hex">#faf8f5</div></div>
+    </div>
+    <div class="t-label">Semantic</div>
+    <div class="swatches">
+      <div class="sw"><div class="sw-block" style="background: var(--accent);"></div><div class="sw-name">Accent</div><div class="sw-hex">#7a2e1f</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--red);"></div><div class="sw-name">Blocker</div><div class="sw-hex">#b42318</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--amber);"></div><div class="sw-name">Warning</div><div class="sw-hex">#b54708</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--green);"></div><div class="sw-name">Passing</div><div class="sw-hex">#1f7a4d</div></div>
+      <div class="sw"><div class="sw-block" style="background: var(--blue);"></div><div class="sw-name">Action</div><div class="sw-hex">#2b5fa8</div></div>
+    </div>
+  </div>
+
+  <!-- Components -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">iii.</div><div class="section-title">Components</div></div>
+
+    <div class="t-label">Stat tiles</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Today</div><div class="stat-val" style="color: var(--red);">49.6<span class="stat-unit">h</span></div><div class="stat-sub">Median resolution</div></div>
+      <div class="stat"><div class="stat-label">Benchmark</div><div class="stat-val" style="color: var(--blue);">0<span class="stat-unit">h</span></div><div class="stat-sub">IT-Request</div></div>
+      <div class="stat"><div class="stat-label">Target</div><div class="stat-val" style="color: var(--green);">&lt;1<span class="stat-unit">m</span></div><div class="stat-sub">Deal Pulse</div></div>
+    </div>
+
+    <div class="t-label">Loading state</div>
+    <div class="stats">
+      <div class="stat loading"><div class="stat-label">Today</div><div class="stat-val">000</div><div class="stat-sub">Loading</div></div>
+      <div class="stat loading"><div class="stat-label">Benchmark</div><div class="stat-val">000</div><div class="stat-sub">Loading</div></div>
+      <div class="stat loading"><div class="stat-label">Target</div><div class="stat-val">000</div><div class="stat-sub">Loading</div></div>
+    </div>
+
+    <div class="t-label">Signals</div>
+    <div class="signals">
+      <div class="sig"><div class="sig-dot" style="background: var(--red);"></div><div><div class="sig-name">DocuSign not completed</div><div class="sig-detail">Envelope sent Sep 14 to David Kim. 8 days waiting.</div><div class="sig-source">Salesforce<span class="sig-action">Check status &rarr;</span></div></div></div>
+      <div class="sig"><div class="sig-dot" style="background: var(--amber);"></div><div><div class="sig-name">42 days in Evaluate Fit</div><div class="sig-detail">Average for PEO at this stage is 18 days.</div><div class="sig-source">Snowflake</div></div></div>
+      <div class="sig"><div class="sig-dot" style="background: var(--green);"></div><div><div class="sig-name">Ready for Negotiate</div><div class="sig-detail">All Evaluate Fit requirements met.</div></div></div>
+    </div>
+
+    <div class="t-label">Bars</div>
+    <div class="bars">
+      <div class="bar"><div class="bar-label">HIQ</div><div class="bar-track"><div class="bar-fill" style="width: 2%; background: var(--green);"></div></div><div class="bar-val">3.1h</div></div>
+      <div class="bar"><div class="bar-label">Opp Lifecycle</div><div class="bar-track"><div class="bar-fill" style="width: 12%; background: var(--amber);"></div></div><div class="bar-val">17.1h</div></div>
+      <div class="bar"><div class="bar-label">Access</div><div class="bar-track"><div class="bar-fill" style="width: 79%; background: var(--red);"></div></div><div class="bar-val">113.5h</div></div>
+    </div>
+
+    <div class="t-label">Status badges</div>
+    <div class="status-row">
+      <div class="status" style="background: var(--red-bg); color: var(--red);">3 blockers</div>
+      <div class="status" style="background: var(--amber-bg); color: var(--amber);">2 warnings</div>
+      <div class="status" style="background: var(--green-bg); color: var(--green);">14 passing</div>
+      <div class="status" style="background: var(--blue-bg); color: var(--blue);">Action needed</div>
+    </div>
+
+    <div class="t-label">Buttons</div>
+    <div style="display: flex; gap: var(--s2); flex-wrap: wrap; margin-bottom: var(--s5);">
+      <button class="btn btn-primary">Save changes</button>
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-ghost">Check status &rarr;</button>
+      <button class="btn btn-danger">Remove</button>
+    </div>
+
+    <div class="t-label">Form controls</div>
+    <div class="card" style="display: flex; flex-direction: column; gap: var(--s4);">
+      <div>
+        <div class="t-label">Text input</div>
+        <input class="input" type="text" placeholder="Enter Company ID">
+      </div>
+      <div>
+        <div class="t-label">Select</div>
+        <select class="select"><option value="" disabled selected>Select provider</option><option>Aetna</option><option>Blue Cross Blue Shield</option><option>Cigna</option></select>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--s3);">
+        <div class="t-label" style="margin-bottom: 0;">Toggle</div>
+        <button class="toggle" onclick="this.classList.toggle('on')"></button>
+        <span style="font-size: 13px; color: var(--ink-3);">CSA Signed</span>
+      </div>
+    </div>
+
+    <div class="t-label" style="margin-top: var(--s5);">Empty state</div>
+    <div class="empty">
+      <div class="empty-icon">&mdash;</div>
+      <div class="empty-text">No signals</div>
+      <div class="empty-sub">This opportunity has no blockers or warnings right now.</div>
+    </div>
+
+    <div class="t-label" style="margin-top: var(--s5);">Table</div>
+    <table class="tbl">
+      <tr><th>Pattern</th><th>Median</th><th>Over 72hr</th><th>Target</th></tr>
+      <tr><td>Opp Lifecycle</td><td class="num">17.1h</td><td class="num" style="color: var(--amber);">24%</td><td class="num" style="color: var(--green);">&lt;1m</td></tr>
+      <tr><td>Access</td><td class="num">113.5h</td><td class="num" style="color: var(--red);">69%</td><td class="num" style="color: var(--green);">&lt;4h</td></tr>
+      <tr><td>Attribution</td><td class="num">118.5h</td><td class="num" style="color: var(--red);">80%</td><td class="num" style="color: var(--green);">&lt;4h</td></tr>
+    </table>
+
+    <div class="t-label">Save footer</div>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="padding: var(--s4) 20px; font-size: 13px; color: var(--ink-3);">Edit something above, then:</div>
+      <div class="save-footer visible">
+        <div class="save-footer-text"><strong>2 fields</strong> changed</div>
+        <div style="display: flex; gap: var(--s2);"><button class="btn btn-secondary">Cancel</button><button class="btn btn-primary" onclick="showToast()">Save</button></div>
+      </div>
+    </div>
+
+    <div class="t-label" style="margin-top: var(--s5);">Toast (click Save above)</div>
+  </div>
+
+  <!-- Spacing -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">iv.</div><div class="section-title">Spacing scale</div></div>
+    <div style="display: flex; gap: var(--s2); align-items: flex-end; margin-bottom: var(--s5);">
+      <div style="text-align: center;"><div style="width: 4px; height: 4px; background: var(--accent); border-radius: 1px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">4</div></div>
+      <div style="text-align: center;"><div style="width: 8px; height: 8px; background: var(--accent); border-radius: 1px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">8</div></div>
+      <div style="text-align: center;"><div style="width: 12px; height: 12px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">12</div></div>
+      <div style="text-align: center;"><div style="width: 16px; height: 16px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">16</div></div>
+      <div style="text-align: center;"><div style="width: 24px; height: 24px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">24</div></div>
+      <div style="text-align: center;"><div style="width: 32px; height: 32px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">32</div></div>
+      <div style="text-align: center;"><div style="width: 48px; height: 48px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">48</div></div>
+      <div style="text-align: center;"><div style="width: 64px; height: 64px; background: var(--accent); border-radius: 2px;"></div><div class="t-meta" style="margin-top: 4px; font-size: 9px;">64</div></div>
+    </div>
+  </div>
+
+  <!-- Identity by artifact -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">v.</div><div class="section-title">Artifact types</div></div>
+    <div class="guide">
+      <div class="guide-row"><div class="guide-type">Prototypes</div><div class="guide-desc">Full Justworks UI Kit, Oately, their colors. GTME eyebrow for annotations only.</div></div>
+      <div class="guide-row"><div class="guide-type">Wireframes</div><div class="guide-desc">Full GTME system. Mono labels, warm paper, white cards.</div></div>
+      <div class="guide-row"><div class="guide-type">KPI dashboards</div><div class="guide-desc">Full GTME system. Display numbers, bars, stat tiles.</div></div>
+      <div class="guide-row"><div class="guide-type">Vision docs</div><div class="guide-desc">Most editorial. Oxblood rules, strong hierarchy, mono metadata.</div></div>
+    </div>
+  </div>
+
+  <!-- Principles -->
+  <div class="section">
+    <div class="section-hdr"><div class="section-num">vi.</div><div class="section-title">Principles</div></div>
+    <div class="t-body" style="margin-bottom: 14px;"><strong>Quiet chrome, loud data.</strong> Paper, rules, and labels are warm and recessive. Numbers are big and saturated. Contrast goes where the eye should go.</div>
+    <div class="t-body" style="margin-bottom: 14px;"><strong>Oxblood marks authorship.</strong> The 2px rule and the eyebrow. That's it. Never touches status or data.</div>
+    <div class="t-body" style="margin-bottom: 14px;"><strong>Mono means metadata.</strong> JetBrains Mono for source labels, timestamps, record IDs, section numbers.</div>
+    <div class="t-body" style="margin-bottom: 14px;"><strong>White cards on warm paper.</strong> Depth from surface contrast, not shadows or borders.</div>
+    <div class="t-body"><strong>Color always paired.</strong> Red/amber/green always appears with a label, arrow, or icon. Never color alone.</div>
+  </div>
+
+  <div class="footer">
+    <span>GTME / DESIGN LANGUAGE / v3</span>
+    <span>SEP 2026</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Saved - refreshing Deal Pulse</div>
+
+<script>
+function showToast() {
+  var t = document.getElementById('toast');
+  t.classList.add('visible');
+  setTimeout(function() { t.classList.remove('visible'); }, 2500);
+}
+</script>
+</body>
+</html>

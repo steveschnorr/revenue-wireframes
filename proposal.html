@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTME Design Language — Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --bg:#faf8f5;--card:#ffffff;--ink:#1a1612;--ink-2:#3d352b;--ink-3:#7a6e5e;
+  --ink-4:#b0a590;--ink-5:#d4cbbe;--rule:#e8e0d4;--rule-soft:#f0ebe3;
+  --hover:rgba(26,22,18,0.04);
+  --accent:#7a2e1f;--accent-hover:#5a1e10;--accent-wash:#faf0ec;
+  --red:#b42318;--red-bg:#fef0ee;--green:#1f7a4d;--green-bg:#edf7f1;
+  --amber:#b54708;--amber-bg:#fef6ee;--blue:#2b5fa8;--blue-bg:#eef3fb;
+  --radius:8px;--radius-sm:4px;
+  --ease:cubic-bezier(0.25,0.1,0.25,1);--dur:0.15s;--dur-lg:0.3s;
+}
+[data-theme="dark"]{
+  --bg:#1a1812;--card:#242118;--ink:#f0ebe3;--ink-2:#d4cbbe;--ink-3:#9e9282;
+  --ink-4:#6e6454;--ink-5:#3d352b;--rule:#332e24;--rule-soft:#2a261e;
+  --hover:rgba(240,235,227,0.06);
+  --accent:#c07060;--accent-hover:#d88878;--accent-wash:#2e2018;
+  --red:#e05545;--red-bg:#2e1c18;--green:#3aad6a;--green-bg:#1a2e20;
+  --amber:#e09030;--amber-bg:#2e2418;--blue:#5088cc;--blue-bg:#1a2030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter Tight',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;transition:background var(--dur-lg) var(--ease),color var(--dur-lg) var(--ease)}
+.top-bar{position:sticky;top:0;z-index:50;background:var(--bg);transition:background var(--dur-lg) var(--ease)}
+.ox{height:2px;background:var(--accent)}
+.scroll-track{height:3px;background:var(--rule-soft);overflow:hidden}
+.scroll-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent) 0%,var(--amber) 50%,var(--green) 100%);transition:width 60ms linear}
+.page{max-width:640px;margin:0 auto;padding:0 var(--s5) var(--s8)}
+.ey{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--ink-4);letter-spacing:.3px;padding:20px 0 var(--s7);display:flex;justify-content:space-between;align-items:center}
+.tog{width:36px;height:20px;border-radius:10px;background:var(--ink-5);border:none;cursor:pointer;position:relative;transition:background var(--dur) var(--ease)}
+.tog::after{content:'';width:16px;height:16px;border-radius:50%;background:var(--card);position:absolute;top:2px;left:2px;transition:transform var(--dur) var(--ease);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+[data-theme="dark"] .tog::after{transform:translateX(16px)}
+p,.body{font-size:15px;font-weight:400;line-height:1.65;color:var(--ink-2);margin-bottom:var(--s4)}
+.sh{display:flex;align-items:baseline;gap:var(--s2);margin-top:var(--s8);margin-bottom:var(--s5)}
+.sn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent)}
+.st{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.5px}
+.meta{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--ink-4)}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.4px;margin-bottom:var(--s2)}
+strong{color:var(--ink);font-weight:700}
+a{color:var(--accent);text-decoration:none;font-weight:600;transition:color var(--dur) var(--ease)}
+a:hover{color:var(--accent-hover)}
+
+/* Display type */
+.display{font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:var(--s4)}
+
+/* Thesis */
+.thesis{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.35;padding:var(--s5) 0;border-top:2px solid var(--accent);border-bottom:1px solid var(--rule);margin:var(--s5) 0}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:var(--s5);margin-bottom:var(--s4);transition:background var(--dur-lg) var(--ease)}
+
+/* Stat strip */
+.stats{display:flex;gap:3px;margin-bottom:var(--s5)}
+.stat{flex:1;background:var(--card);border-radius:var(--radius);padding:18px 16px;text-align:center;transition:background var(--dur-lg) var(--ease)}
+.stat-num{font-size:32px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.stat-unit{font-size:14px;font-weight:500;color:var(--ink-4);margin-left:1px}
+.stat-sub{font-size:11px;color:var(--ink-4);margin-top:var(--s1);font-weight:500}
+
+/* Principle cards */
+.principles{display:flex;flex-direction:column;gap:3px;margin-bottom:var(--s5)}
+.principle{background:var(--card);border-radius:var(--radius);padding:var(--s4) var(--s5);display:flex;gap:var(--s4);align-items:flex-start;transition:background var(--dur-lg) var(--ease)}
+.principle:hover{background:var(--hover)}
+.p-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);padding-top:2px;width:16px;flex-shrink:0}
+.p-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.p-desc{font-size:13px;color:var(--ink-3);line-height:1.45}
+
+/* Color swatches */
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--s4)}
+.sw{width:64px}
+.sw-block{width:64px;height:40px;border-radius:var(--radius-sm);margin-bottom:var(--s1);transition:transform var(--dur) var(--ease)}
+.sw-block:hover{transform:scale(1.05)}
+.sw-name{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;color:var(--ink-3)}
+.sw-hex{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-4)}
+
+/* Type specimens */
+.specimen{margin-bottom:var(--s4)}
+.specimen-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;color:var(--ink-4);text-transform:uppercase;letter-spacing:.3px;margin-bottom:var(--s1)}
+.specimen-display{font-size:36px;font-weight:700;letter-spacing:-.04em}
+.specimen-number{font-size:40px;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.specimen-heading{font-size:18px;font-weight:700;letter-spacing:-.02em}
+.specimen-body{font-size:15px;color:var(--ink-2);line-height:1.6}
+.specimen-meta{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--ink-3)}
+.specimen-label-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.4px}
+
+/* Component examples */
+.mini-stat{background:var(--card);border-radius:var(--radius);padding:14px 12px;transition:background var(--dur-lg) var(--ease)}
+.mini-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.3px}
+.mini-stat-val{font-size:24px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:2px;line-height:1}
+.mini-stat-sub{font-size:10px;color:var(--ink-4);margin-top:2px}
+
+/* Status badges */
+.badges{display:flex;gap:var(--s2);flex-wrap:wrap;margin-bottom:var(--s4)}
+.badge{font-size:12px;font-weight:600;padding:5px 12px;border-radius:var(--radius-sm)}
+
+/* Signal rows */
+.sigs{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:var(--s4);transition:background var(--dur-lg) var(--ease)}
+.sig{display:flex;align-items:flex-start;gap:10px;padding:var(--s3) var(--s4);transition:background var(--dur) var(--ease)}
+.sig:hover{background:var(--hover)}
+.sig+.sig{border-top:1px solid var(--rule-soft)}
+.sig-dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.sig-name{font-size:13px;font-weight:600}
+.sig-detail{font-size:12px;color:var(--ink-3);margin-top:1px}
+
+/* Artifact matrix */
+.matrix{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:var(--s5);transition:background var(--dur-lg) var(--ease)}
+.matrix-row{display:flex;padding:var(--s3) var(--s5);align-items:baseline;gap:var(--s4)}
+.matrix-row+.matrix-row{border-top:1px solid var(--rule-soft)}
+.matrix-row:hover{background:var(--hover)}
+.matrix-type{width:130px;font-size:13px;font-weight:600;flex-shrink:0}
+.matrix-desc{font-size:13px;color:var(--ink-3);line-height:1.45}
+
+/* Example links */
+.examples{display:flex;flex-direction:column;gap:3px;margin-bottom:var(--s5)}
+.example-link{background:var(--card);border-radius:var(--radius);padding:var(--s4) var(--s5);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:var(--ink);transition:background var(--dur) var(--ease)}
+.example-link:hover{background:var(--hover)}
+.ex-name{font-size:15px;font-weight:600}
+.ex-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--ink-4);text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.ex-arrow{font-size:18px;color:var(--accent)}
+
+/* Footer */
+.foot{margin-top:var(--s8);padding-top:20px;border-top:2px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-4);display:flex;justify-content:space-between}
+
+@media(max-width:560px){
+  .stats{flex-direction:column}
+  .display{font-size:28px}
+  .swatches{gap:6px}
+  .sw{width:52px}
+  .sw-block{width:52px;height:32px}
+}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="ox"></div><div class="scroll-track"><div class="scroll-fill" id="sf"></div></div></div>
+<div class="page">
+
+<div class="ey">
+  <span>GTME / DESIGN LANGUAGE / PROPOSAL / SEP 2026</span>
+  <button class="tog" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'" aria-label="Toggle theme"></button>
+</div>
+
+<!-- Title -->
+<div class="display">Design Language</div>
+<p style="max-width:460px">A system for everything GTME ships. Dashboards, wireframes, vision docs, prototypes, and AI-generated artifacts — all speaking the same visual language.</p>
+
+<!-- Why -->
+<div class="thesis">Build better. Build faster. Build reliably.</div>
+
+<div class="sh"><div class="sn">i.</div><div class="st">Why a design system</div></div>
+
+<p>Every dashboard we've shipped invented its own visual vocabulary — colors, formatting, KPI tiles, loading states. The audit found:</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num" style="color:var(--red)">5</div><div class="stat-sub">different greens</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--red)">30+</div><div class="stat-sub">duplicated formatters</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--red)">7</div><div class="stat-sub">KPI tile implementations</div></div>
+</div>
+
+<p>This isn't a style guide. It's infrastructure. One set of tokens, one formatting library, one component vocabulary. The system makes the right choice the easy choice — for humans and for AI agents.</p>
+
+<div class="card">
+  <div class="lbl">Faster</div>
+  <p style="margin-bottom:var(--s4)">Templates and tokens beat blank pages. A new dashboard starts with the system, not from scratch. An agent generating a wireframe uses the same rules automatically.</p>
+  <div class="lbl">More reliable</div>
+  <p style="margin-bottom:var(--s4)">One green, one red, one date format. Pipeline Council's green (<span class="meta">#639922</span>) fails WCAG AA on white. The system's green (<span class="meta">#1f7a4d</span>) passes. That's the kind of thing you fix once.</p>
+  <div class="lbl">Better</div>
+  <p style="margin-bottom:0">Source lines and "as of" timestamps are required, not optional. Every metric answers "where did this number come from?" before anyone asks.</p>
+</div>
+
+<!-- Principles -->
+<div class="sh"><div class="sn">ii.</div><div class="st">Principles</div></div>
+
+<div class="principles">
+  <div class="principle"><div class="p-num">1</div><div><div class="p-name">Quiet chrome, loud data</div><div class="p-desc">Paper, rules, and labels are warm and recessive. Numbers are big and saturated. Contrast goes where the eye should go.</div></div></div>
+  <div class="principle"><div class="p-num">2</div><div><div class="p-name">Oxblood marks authorship</div><div class="p-desc">The 2px rule and the eyebrow. That's it. Never touches status or data — red, amber, green handle that.</div></div></div>
+  <div class="principle"><div class="p-num">3</div><div><div class="p-name">Mono means metadata</div><div class="p-desc">JetBrains Mono for source labels, timestamps, record IDs, section numbers. If it's provenance, it's mono.</div></div></div>
+  <div class="principle"><div class="p-num">4</div><div><div class="p-name">White cards on warm paper</div><div class="p-desc">Depth from surface contrast, not shadows or borders. No drop shadows. No border on cards.</div></div></div>
+  <div class="principle"><div class="p-num">5</div><div><div class="p-name">Color always paired</div><div class="p-desc">Red, amber, green always appears with a label, arrow, or icon. Never color alone — a red number without context is just a red number.</div></div></div>
+</div>
+
+<!-- Color -->
+<div class="sh"><div class="sn">iii.</div><div class="st">Color</div></div>
+
+<p>Warm neutrals as chrome. Oxblood for authorship. Status colors are brighter and hue-separated from the accent. Toggle dark mode above to see the dark palette.</p>
+
+<div class="lbl">Chrome</div>
+<div class="swatches">
+  <div class="sw"><div class="sw-block" style="background:var(--ink)"></div><div class="sw-name">Ink</div><div class="sw-hex">#1a1612</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--ink-2)"></div><div class="sw-name">Secondary</div><div class="sw-hex">#3d352b</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--ink-3)"></div><div class="sw-name">Muted</div><div class="sw-hex">#7a6e5e</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--ink-4)"></div><div class="sw-name">Faint</div><div class="sw-hex">#b0a590</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--card);border:1px solid var(--rule)"></div><div class="sw-name">Card</div><div class="sw-hex">#ffffff</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--bg);border:1px solid var(--rule)"></div><div class="sw-name">Paper</div><div class="sw-hex">#faf8f5</div></div>
+</div>
+
+<div class="lbl">Semantic</div>
+<div class="swatches">
+  <div class="sw"><div class="sw-block" style="background:var(--accent)"></div><div class="sw-name">Accent</div><div class="sw-hex">#7a2e1f</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--red)"></div><div class="sw-name">Blocker</div><div class="sw-hex">#b42318</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--amber)"></div><div class="sw-name">Warning</div><div class="sw-hex">#b54708</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--green)"></div><div class="sw-name">Passing</div><div class="sw-hex">#1f7a4d</div></div>
+  <div class="sw"><div class="sw-block" style="background:var(--blue)"></div><div class="sw-name">Action</div><div class="sw-hex">#2b5fa8</div></div>
+</div>
+
+<!-- Typography -->
+<div class="sh"><div class="sn">iv.</div><div class="st">Typography</div></div>
+
+<p>Two fonts, clear roles. Inter Tight is tight-tracked for dense data displays. JetBrains Mono separates metadata from content.</p>
+
+<div class="card">
+  <div class="specimen"><div class="specimen-label">Display</div><div class="specimen-display">One Front Door</div></div>
+  <div class="specimen"><div class="specimen-label">Number</div><div class="specimen-number" style="color:var(--red)">49.6<span style="font-size:18px;font-weight:500;color:var(--ink-4);margin-left:1px">h</span></div></div>
+  <div class="specimen"><div class="specimen-label">Heading</div><div class="specimen-heading">Can't move to Onboard</div></div>
+  <div class="specimen"><div class="specimen-label">Body</div><div class="specimen-body">The Workers' Comp application hasn't been filed and the Client Service Agreement isn't signed yet.</div></div>
+  <div class="specimen"><div class="specimen-label">Meta</div><div class="specimen-meta">Acme Corp · PEO Plus · $285K · Negotiate</div></div>
+  <div class="specimen" style="margin-bottom:0"><div class="specimen-label">Label</div><div class="specimen-label-type">Median resolution · L90D</div></div>
+</div>
+
+<!-- Components -->
+<div class="sh"><div class="sn">v.</div><div class="st">Components</div></div>
+
+<div class="lbl">Stat tiles</div>
+<div style="display:flex;gap:3px;margin-bottom:var(--s5)">
+  <div class="mini-stat" style="flex:1"><div class="mini-stat-lbl">Today</div><div class="mini-stat-val" style="color:var(--red)">49.6<span style="font-size:12px;font-weight:500;color:var(--ink-4)">h</span></div><div class="mini-stat-sub">Median resolution</div></div>
+  <div class="mini-stat" style="flex:1"><div class="mini-stat-lbl">Benchmark</div><div class="mini-stat-val" style="color:var(--blue)">0<span style="font-size:12px;font-weight:500;color:var(--ink-4)">h</span></div><div class="mini-stat-sub">IT-Request</div></div>
+  <div class="mini-stat" style="flex:1"><div class="mini-stat-lbl">Target</div><div class="mini-stat-val" style="color:var(--green)">&lt;1<span style="font-size:12px;font-weight:500;color:var(--ink-4)">m</span></div><div class="mini-stat-sub">Deal Pulse</div></div>
+</div>
+
+<div class="lbl">Status badges</div>
+<div class="badges">
+  <div class="badge" style="background:var(--red-bg);color:var(--red)">3 blockers</div>
+  <div class="badge" style="background:var(--amber-bg);color:var(--amber)">2 warnings</div>
+  <div class="badge" style="background:var(--green-bg);color:var(--green)">14 passing</div>
+  <div class="badge" style="background:var(--blue-bg);color:var(--blue)">Action needed</div>
+</div>
+
+<div class="lbl">Signal rows</div>
+<div class="sigs">
+  <div class="sig"><div class="sig-dot" style="background:var(--red)"></div><div><div class="sig-name">DocuSign not completed</div><div class="sig-detail">Envelope sent Sep 14 to David Kim. 8 days waiting.</div></div></div>
+  <div class="sig"><div class="sig-dot" style="background:var(--amber)"></div><div><div class="sig-name">42 days in Evaluate Fit</div><div class="sig-detail">Average for PEO at this stage is 18 days.</div></div></div>
+  <div class="sig"><div class="sig-dot" style="background:var(--green)"></div><div><div class="sig-name">Ready for Negotiate</div><div class="sig-detail">All Evaluate Fit requirements met.</div></div></div>
+</div>
+
+<!-- Artifact types -->
+<div class="sh"><div class="sn">vi.</div><div class="st">When to use what</div></div>
+
+<p>The GTME system owns wireframes, KPI dashboards, and vision docs. Prototypes that ship in-app use the Justworks UI Kit — GTME adds the eyebrow for annotations only.</p>
+
+<div class="matrix">
+  <div class="matrix-row"><div class="matrix-type">Prototypes</div><div class="matrix-desc">Justworks UI Kit, Oately, their colors. GTME eyebrow for annotations only.</div></div>
+  <div class="matrix-row"><div class="matrix-type">Wireframes</div><div class="matrix-desc">Full GTME system. Mono labels, warm paper, white cards.</div></div>
+  <div class="matrix-row"><div class="matrix-type">KPI dashboards</div><div class="matrix-desc">Full GTME system. Display numbers, bars, stat tiles, source lines.</div></div>
+  <div class="matrix-row"><div class="matrix-type">Vision docs</div><div class="matrix-desc">Most editorial. Oxblood rules, strong hierarchy, mono metadata.</div></div>
+</div>
+
+<!-- Applied examples -->
+<div class="sh"><div class="sn">vii.</div><div class="st">Applied examples</div></div>
+
+<p>Same system, two artifact types. Open each to see the design language working on real content.</p>
+
+<div class="examples">
+  <a class="example-link" href="kpis.html">
+    <div><div class="ex-name">One Front Door — KPIs</div><div class="ex-type">KPI Dashboard</div></div>
+    <div class="ex-arrow">→</div>
+  </a>
+  <a class="example-link" href="brand.html">
+    <div><div class="ex-name">Component Reference</div><div class="ex-type">Design Language v3</div></div>
+    <div class="ex-arrow">→</div>
+  </a>
+</div>
+
+<!-- What's next -->
+<div class="sh"><div class="sn">viii.</div><div class="st">Next steps</div></div>
+
+<div class="card">
+  <div class="lbl">Now</div>
+  <p style="margin-bottom:var(--s4)">The design language is encoded and working. Tokens, rules, and starter templates are in the repo. Agents pick it up automatically. New artifacts start from the system, not from scratch.</p>
+  <div class="lbl">This week</div>
+  <p style="margin-bottom:var(--s4)">Deal Pulse LWC — the Salesforce component that prevents the #1 BOPS pattern at the source. Uses SLDS in-app, GTME design language for wireframes and docs around it.</p>
+  <div class="lbl">Next</div>
+  <p style="margin-bottom:0">Rev HQ infrastructure PR — global CSS tokens and consolidated formatting utilities. No visual changes. Lays the track so dashboards can migrate one at a time.</p>
+</div>
+
+<div class="sh"><div class="sn">ix.</div><div class="st">Adoption</div></div>
+
+<div class="card">
+  <div class="lbl">For agents</div>
+  <p style="margin-bottom:var(--s4)">Already encoded as a Claude Code rules file (<span class="meta">.claude/rules/gtme-design.md</span>) and machine-readable tokens (<span class="meta">shared/design/tokens.json</span>). Any agent working in the Rev HQ repo picks it up automatically. No setup.</p>
+  <div class="lbl">For humans</div>
+  <p style="margin-bottom:var(--s4)">Start from a template, not a blank page. The applied examples above are starter files — copy one, swap the content, ship it.</p>
+  <div class="lbl">For Rev HQ</div>
+  <p style="margin-bottom:0">Global CSS tokens → format utility consolidation → reskin one dashboard → learn → expand. No big bang. The system lands as infrastructure first, then each dashboard migrates.</p>
+</div>
+
+<div class="meta" style="margin-top:var(--s5)">Derived from an audit of 15+ shipped dashboards. Sep 22 2026.</div>
+
+<div class="foot">
+  <span>GTME / DESIGN LANGUAGE / PROPOSAL</span>
+  <span>SEP 2026</span>
+</div>
+</div>
+<script>
+var f=document.getElementById('sf');
+function s(){var h=document.documentElement.scrollHeight-window.innerHeight;f.style.width=(h>0?(window.scrollY/h)*100:0)+'%'}
+window.addEventListener('scroll',s,{passive:true});s();
+</script>
+</body>
+</html>

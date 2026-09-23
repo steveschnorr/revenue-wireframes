@@ -3,250 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>One Front Door - KPIs</title>
+<title>One Front Door — KPIs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
-  --bg:#faf8f5;--card:#fff;--ink:#1a1612;--ink-2:#3d352b;--ink-3:#7a6e5e;--ink-4:#b0a590;--ink-5:#d4cbbe;
-  --rule:#e8e0d4;--rule-soft:#f0ebe3;--hover:rgba(26,22,18,0.04);
-  --accent:#7a2e1f;--accent-hover:#5a1e10;
-  --red:#b42318;--red-bg:#fef0ee;--green:#1f7a4d;--green-bg:#edf7f1;--amber:#b54708;--amber-bg:#fef6ee;--blue:#2b5fa8;--blue-bg:#eef3fb;
-  --radius:8px;--radius-sm:4px;--ease:cubic-bezier(0.25,0.1,0.25,1);--dur:0.15s;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --bg: #faf8f5; --card: #ffffff; --ink: #1a1612; --ink-2: #3d352b; --ink-3: #7a6e5e;
+  --ink-4: #b0a590; --ink-5: #d4cbbe; --rule: #e8e0d4; --rule-soft: #f0ebe3;
+  --hover: rgba(26,22,18,0.04);
+  --accent: #7a2e1f; --accent-hover: #5a1e10; --accent-wash: #faf0ec;
+  --red: #b42318; --red-bg: #fef0ee; --green: #1f7a4d; --green-bg: #edf7f1;
+  --amber: #b54708; --amber-bg: #fef6ee; --blue: #2b5fa8; --blue-bg: #eef3fb;
+  --radius: 8px; --radius-sm: 4px;
+  --ease: cubic-bezier(0.25,0.1,0.25,1); --dur: 0.15s; --dur-lg: 0.3s;
 }
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Inter Tight',-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--ink); padding:0 var(--s5) var(--s8); -webkit-font-smoothing:antialiased; }
-.page { max-width:720px; margin:0 auto; }
+[data-theme="dark"] {
+  --bg: #1a1812; --card: #242118; --ink: #f0ebe3; --ink-2: #d4cbbe; --ink-3: #9e9282;
+  --ink-4: #6e6454; --ink-5: #3d352b; --rule: #332e24; --rule-soft: #2a261e;
+  --hover: rgba(240,235,227,0.06);
+  --accent: #c07060; --accent-hover: #d88878; --accent-wash: #2e2018;
+  --red: #e05545; --red-bg: #2e1c18; --green: #3aad6a; --green-bg: #1a2e20;
+  --amber: #e09030; --amber-bg: #2e2418; --blue: #5088cc; --blue-bg: #1a2030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter Tight',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;transition:background var(--dur-lg) var(--ease),color var(--dur-lg) var(--ease)}
 
-.eyebrow { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:var(--ink-4); letter-spacing:0.3px; padding:20px 0 var(--s7); border-top:2px solid var(--accent); }
+/* Sticky top */
+.top-bar{position:sticky;top:0;z-index:50;background:var(--bg);transition:background var(--dur-lg) var(--ease)}
+.ox{height:2px;background:var(--accent)}
+.scroll-track{height:3px;background:var(--rule-soft);overflow:hidden}
+.scroll-fill{height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent) 0%,var(--amber) 50%,var(--green) 100%);
+  transition:width 60ms linear}
 
-.section { margin-bottom:var(--s8); }
-.section-hdr { display:flex; align-items:baseline; gap:var(--s2); margin-bottom:var(--s5); }
-.section-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--accent); }
-.section-title { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.5px; }
+.page{max-width:640px;margin:0 auto;padding:0 var(--s5) var(--s8)}
 
-.t-display { font-size:48px; font-weight:700; letter-spacing:-0.045em; line-height:1.05; }
-.t-body { font-size:15px; font-weight:400; line-height:1.6; color:var(--ink-2); }
-.t-label { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:var(--s2); }
+/* Eyebrow */
+.ey{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--ink-4);
+  letter-spacing:.3px;padding:20px 0 var(--s7);display:flex;justify-content:space-between;align-items:center}
+.tog{width:36px;height:20px;border-radius:10px;background:var(--ink-5);border:none;cursor:pointer;position:relative;transition:background var(--dur) var(--ease)}
+.tog::after{content:'';width:16px;height:16px;border-radius:50%;background:var(--card);position:absolute;top:2px;left:2px;transition:transform var(--dur) var(--ease);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+[data-theme="dark"] .tog::after{transform:translateX(16px)}
 
-/* Hero stats */
-.hero { display:flex; gap:3px; margin-bottom:var(--s5); }
-.hero-stat { flex:1; background:var(--card); padding:var(--s5) 20px; border-radius:var(--radius); }
-.hero-label { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.4px; }
-.hero-val { font-size:52px; font-weight:700; letter-spacing:-0.04em; margin-top:var(--s2); line-height:1; font-variant-numeric:tabular-nums; }
-.hero-unit { font-size:22px; font-weight:500; color:var(--ink-4); margin-left:1px; }
-.hero-sub { font-size:12px; color:var(--ink-4); margin-top:var(--s2); font-weight:500; }
+/* Section headers */
+.sh{display:flex;align-items:baseline;gap:var(--s2);margin-top:var(--s8);margin-bottom:var(--s5)}
+.sn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent)}
+.st{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.5px}
 
-/* Ecosystem comparison */
-.eco { display:flex; gap:3px; margin-bottom:var(--s5); border-radius:var(--radius); overflow:hidden; }
-.eco-col { flex:1; background:var(--card); padding:20px; text-align:center; }
-.eco-name { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--ink-4); text-transform:uppercase; letter-spacing:0.3px; }
-.eco-val { font-size:36px; font-weight:700; letter-spacing:-0.03em; margin-top:var(--s2); line-height:1; font-variant-numeric:tabular-nums; }
-.eco-unit { font-size:16px; font-weight:500; color:var(--ink-4); }
-.eco-detail { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-4); margin-top:var(--s3); line-height:1.5; }
-.eco-bar { height:3px; border-radius:2px; margin-top:var(--s3); }
+/* Type */
+p,.body{font-size:15px;font-weight:400;line-height:1.65;color:var(--ink-2);margin-bottom:var(--s4)}
+.mono{font-family:'JetBrains Mono',monospace}
+.meta{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--ink-4)}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.4px}
+strong{color:var(--ink);font-weight:700}
 
-/* Pattern bars */
-.bars { background:var(--card); border-radius:var(--radius); padding:20px; }
-.bar { display:flex; align-items:center; gap:var(--s3); margin-bottom:var(--s3); }
-.bar:last-child { margin-bottom:0; }
-.bar-label { width:110px; font-size:13px; font-weight:600; color:var(--ink-2); text-align:right; flex-shrink:0; }
-.bar-track { flex:1; height:18px; background:var(--rule-soft); border-radius:3px; overflow:hidden; }
-.bar-fill { height:100%; border-radius:3px; transition:width 0.3s var(--ease); }
-.bar-val { width:52px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--ink-2); flex-shrink:0; }
-.bar-target { width:52px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--green); flex-shrink:0; text-align:right; }
+/* Hero */
+.hero{text-align:center;padding:var(--s7) 0 var(--s5)}
+.hero-num{font-size:80px;font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;color:var(--red)}
+.hero-unit{font-size:32px;font-weight:500;color:var(--ink-4);margin-left:2px}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:var(--s3)}
+.hero-sub{font-size:15px;color:var(--ink-3);margin-top:var(--s3)}
+
+/* Benchmarks strip */
+.bench{display:flex;gap:3px;margin-bottom:var(--s4)}
+.bench-item{flex:1;background:var(--card);border-radius:var(--radius);padding:18px 16px;text-align:center;transition:background var(--dur-lg) var(--ease)}
+.bench-val{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.bench-unit{font-size:13px;font-weight:500;color:var(--ink-4);margin-left:1px}
+.bench-name{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:.3px;margin-bottom:var(--s2)}
+.bench-detail{font-size:11px;color:var(--ink-4);margin-top:var(--s1)}
+
+/* Thesis */
+.thesis{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.35;padding:var(--s5) 0;
+  border-top:2px solid var(--accent);border-bottom:1px solid var(--rule);margin:var(--s5) 0}
+
+/* Bars */
+.bars{background:var(--card);border-radius:var(--radius);padding:18px 20px;margin-bottom:var(--s4);transition:background var(--dur-lg) var(--ease)}
+.bar{display:flex;align-items:center;gap:var(--s3);height:32px}
+.bar+.bar{margin-top:2px}
+.bar-lbl{width:100px;font-size:13px;font-weight:600;color:var(--ink-2);text-align:right;flex-shrink:0;white-space:nowrap}
+.bar-track{flex:1;height:18px;background:var(--rule-soft);border-radius:3px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:3px;min-width:4px}
+.bar-val{width:60px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ink-2);flex-shrink:0}
+.bar-tgt{width:52px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;flex-shrink:0;text-align:right}
 
 /* Pillars */
-.pillars { display:flex; gap:3px; margin-bottom:var(--s5); }
-.pillar { flex:1; background:var(--card); padding:20px; border-radius:var(--radius); }
-.pillar-icon { font-size:20px; margin-bottom:var(--s3); }
-.pillar-title { font-size:15px; font-weight:700; margin-bottom:var(--s4); letter-spacing:-0.01em; }
-.pillar-row { display:flex; justify-content:space-between; align-items:baseline; padding:var(--s1) 0; }
-.pillar-label { font-size:12px; color:var(--ink-3); }
-.pillar-val { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; }
-.pillar-divider { height:1px; background:var(--rule-soft); margin:var(--s2) 0; }
+.pillars{display:flex;gap:3px;margin-bottom:var(--s5)}
+.pillar{flex:1;background:var(--card);border-radius:var(--radius);padding:20px 16px;transition:background var(--dur-lg) var(--ease)}
+.p-icon{font-size:20px;margin-bottom:var(--s2)}
+.p-title{font-size:15px;font-weight:700;letter-spacing:-.01em;margin-bottom:var(--s4)}
+.p-row{margin-bottom:8px}
+.p-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;color:var(--ink-4);text-transform:uppercase;letter-spacing:.3px}
+.p-val{font-size:14px;font-weight:700;margin-top:1px}
+.p-note{font-size:11px;color:var(--ink-4)}
 
-/* Impact rows */
-.impact { background:var(--card); border-radius:var(--radius); overflow:hidden; }
-.imp { padding:var(--s4) 20px; display:flex; align-items:center; gap:var(--s4); transition:background var(--dur) var(--ease); }
-.imp:hover { background:var(--hover); }
-.imp + .imp { border-top:1px solid var(--rule-soft); }
-.imp-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--accent); width:20px; flex-shrink:0; }
-.imp-body { flex:1; }
-.imp-name { font-size:14px; font-weight:600; }
-.imp-detail { font-size:12px; color:var(--ink-3); margin-top:2px; }
-.imp-metric { text-align:right; flex-shrink:0; font-family:'JetBrains Mono',monospace; }
-.imp-from { font-size:12px; font-weight:600; color:var(--red); }
-.imp-to { font-size:12px; font-weight:600; color:var(--green); }
-.imp-arrow { font-size:10px; color:var(--ink-4); margin:2px 0; }
+/* Movers */
+.movers{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:var(--s5);transition:background var(--dur-lg) var(--ease)}
+.mover{display:grid;grid-template-columns:32px 1fr auto;gap:var(--s4);align-items:start;padding:var(--s4) 20px;transition:background var(--dur) var(--ease)}
+.mover:hover{background:var(--hover)}
+.mover+.mover{border-top:1px solid var(--rule-soft)}
+.m-num{font-size:18px;font-weight:700;color:var(--accent);text-align:center;padding-top:2px}
+.m-title{font-size:15px;font-weight:600;line-height:1.35}
+.m-desc{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.45}
+.m-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-4);margin-top:5px;font-weight:500}
+.m-impact{text-align:right;white-space:nowrap;padding-top:2px}
+.m-from{font-size:18px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums}
+.m-arrow{font-size:13px;color:var(--ink-5);margin:0 6px}
+.m-to{font-size:18px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
 
-/* Slack signal */
-.slack-card { background:var(--card); border-radius:var(--radius); padding:20px; display:flex; gap:var(--s5); }
-.slack-stat { flex:1; }
-.slack-val { font-size:28px; font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
-.slack-label { font-size:12px; color:var(--ink-3); margin-top:2px; }
+/* Footer */
+.foot{margin-top:var(--s8);padding-top:20px;border-top:2px solid var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-4);display:flex;justify-content:space-between}
 
-.footer { margin-top:var(--s8); padding-top:20px; border-top:2px solid var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-4); display:flex; justify-content:space-between; }
-
-@media (max-width:600px) {
-  .hero,.pillars,.eco { flex-direction:column; }
-  .hero-val { font-size:40px; }
-  .t-display { font-size:36px; }
+@media(max-width:560px){
+  .bench,.pillars{flex-direction:column}
+  .hero-num{font-size:56px}
+  .bar-lbl{width:72px;font-size:12px}
+  .mover{grid-template-columns:24px 1fr}
+  .m-impact{grid-column:1/-1;text-align:left}
 }
 </style>
 </head>
 <body>
+
+<div class="top-bar">
+  <div class="ox"></div>
+  <div class="scroll-track"><div class="scroll-fill" id="sf"></div></div>
+</div>
+
 <div class="page">
 
-  <div class="eyebrow">GTME / KPI FRAMEWORK / SEP 2026</div>
-
-  <div class="section">
-    <div class="t-display">Baseline &amp; Targets</div>
-    <div class="t-body" style="max-width:520px; margin-top:var(--s4);">One metric: median time from request to resolution. Measured the same way across every channel and every pattern. Here's where we are and where we're going.</div>
+  <div class="ey">
+    <span>GTME / ONE FRONT DOOR / KPIS / SEP 2026</span>
+    <button class="tog" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'" aria-label="Toggle theme"></button>
   </div>
 
-  <!-- Hero -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">i.</div><div class="section-title">The headline</div></div>
-    <div class="hero">
-      <div class="hero-stat">
-        <div class="hero-label">BOPS today</div>
-        <div class="hero-val" style="color:var(--red);">49.6<span class="hero-unit">h</span></div>
-        <div class="hero-sub">Median resolution</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-label">Benchmark</div>
-        <div class="hero-val" style="color:var(--blue);">0<span class="hero-unit">h</span></div>
-        <div class="hero-sub">IT-Request median</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-label">Target</div>
-        <div class="hero-val" style="color:var(--green);">&lt;1<span class="hero-unit">m</span></div>
-        <div class="hero-sub">Deal Pulse patterns</div>
-      </div>
+  <!-- Hero: one number, dead center -->
+  <div class="hero">
+    <div class="hero-label">BOPS median resolution today</div>
+    <div class="hero-num">49.6<span class="hero-unit">h</span></div>
+    <div class="hero-sub">One metric. How long from request to resolution.</div>
+  </div>
+
+  <!-- Benchmarks: where we are vs where we could be -->
+  <div class="bench">
+    <div class="bench-item">
+      <div class="bench-name">IT-Request</div>
+      <div class="bench-val" style="color:var(--green)">0<span class="bench-unit">h</span></div>
+      <div class="bench-detail">Best in ecosystem</div>
+    </div>
+    <div class="bench-item">
+      <div class="bench-name">Workers' Comp</div>
+      <div class="bench-val" style="color:var(--amber)">16.4<span class="bench-unit">h</span></div>
+      <div class="bench-detail">Mid-range</div>
+    </div>
+    <div class="bench-item">
+      <div class="bench-name">Our target</div>
+      <div class="bench-val" style="color:var(--blue)">&lt;1<span class="bench-unit">m</span></div>
+      <div class="bench-detail">Deal Pulse patterns</div>
+    </div>
+  </div>
+  <div class="meta">Source: Jira API · 100 resolved tickets per queue · L90D</div>
+
+  <!-- Thesis -->
+  <div class="thesis">One front door that's incredibly fast, shockingly accurate, and completely dependable.</div>
+  <p>Not a better ticketing system. A system where most requests resolve in seconds because the answer is already in the data.</p>
+
+  <!-- ii. Ecosystem -->
+  <div class="sh"><div class="sn">i.</div><div class="st">Across the ecosystem — L90D</div></div>
+
+  <div class="bench" style="margin-bottom:var(--s3)">
+    <div class="bench-item" style="text-align:left">
+      <div class="bench-name">IT-Request</div>
+      <div class="bench-val" style="color:var(--green);font-size:22px">0<span class="bench-unit">h median</span></div>
+      <div class="bench-detail">74% under 1hr · 0% over 72hr</div>
+    </div>
+    <div class="bench-item" style="text-align:left">
+      <div class="bench-name">Workers' Comp</div>
+      <div class="bench-val" style="color:var(--amber);font-size:22px">16.4<span class="bench-unit">h median</span></div>
+      <div class="bench-detail">21% under 1hr · 6% over 72hr</div>
+    </div>
+    <div class="bench-item" style="text-align:left">
+      <div class="bench-name">BOPS</div>
+      <div class="bench-val" style="color:var(--red);font-size:22px">49.6<span class="bench-unit">h median</span></div>
+      <div class="bench-detail">17% under 1hr · 45% over 72hr</div>
+    </div>
+  </div>
+  <div class="meta">Source: Jira API by queue · 100 resolved tickets each</div>
+
+  <!-- iii. By pattern -->
+  <div class="sh"><div class="sn">ii.</div><div class="st">BOPS by pattern</div></div>
+
+  <div class="bars">
+    <div class="bar"><div class="bar-lbl">HIQ</div><div class="bar-track"><div class="bar-fill" style="width:1.2%;background:var(--green)"></div></div><div class="bar-val">3.1h</div><div class="bar-tgt" style="color:var(--green)">→ &lt;1m</div></div>
+    <div class="bar"><div class="bar-lbl">DocuSign</div><div class="bar-track"><div class="bar-fill" style="width:1.7%;background:var(--green)"></div></div><div class="bar-val">4.3h</div><div class="bar-tgt" style="color:var(--green)">→ &lt;1m</div></div>
+    <div class="bar"><div class="bar-lbl">Opp Lifecycle</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:var(--amber)"></div></div><div class="bar-val">17.1h</div><div class="bar-tgt" style="color:var(--green)">→ &lt;1m</div></div>
+    <div class="bar"><div class="bar-lbl">Uncategorized</div><div class="bar-track"><div class="bar-fill" style="width:30.5%;background:var(--amber)"></div></div><div class="bar-val">79h</div><div class="bar-tgt" style="color:var(--amber)">→ classify</div></div>
+    <div class="bar"><div class="bar-lbl">Access</div><div class="bar-track"><div class="bar-fill" style="width:43.7%;background:var(--red)"></div></div><div class="bar-val">113.5h</div><div class="bar-tgt" style="color:var(--blue)">→ &lt;4h</div></div>
+    <div class="bar"><div class="bar-lbl">Attribution</div><div class="bar-track"><div class="bar-fill" style="width:45.7%;background:var(--red)"></div></div><div class="bar-val">118.5h</div><div class="bar-tgt" style="color:var(--blue)">→ &lt;4h</div></div>
+    <div class="bar"><div class="bar-lbl">Merge</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--red)"></div></div><div class="bar-val">259.4h</div><div class="bar-tgt" style="color:var(--blue)">→ &lt;24h</div></div>
+  </div>
+  <div class="meta">Source: Jira BOPS queue · Categorized by request type · Median hours to resolve</div>
+
+  <!-- iv. Pillars -->
+  <div class="sh"><div class="sn">iii.</div><div class="st">Three pillars</div></div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="p-icon">⚡</div>
+      <div class="p-title">Fast</div>
+      <div class="p-row"><div class="p-lbl">Today</div><div class="p-val" style="color:var(--red)">49.6h</div></div>
+      <div class="p-row"><div class="p-lbl">Phase 1</div><div class="p-val" style="color:var(--green)">&lt;1m</div><div class="p-note">Self-serve patterns</div></div>
+      <div class="p-row"><div class="p-lbl">Phase 2</div><div class="p-val" style="color:var(--green)">&lt;4h</div><div class="p-note">All patterns</div></div>
+    </div>
+    <div class="pillar">
+      <div class="p-icon">🎯</div>
+      <div class="p-title">Accurate</div>
+      <div class="p-row"><div class="p-lbl">Freshness</div><div class="p-val" style="color:var(--amber)">24h lag</div></div>
+      <div class="p-row"><div class="p-lbl">Phase 1</div><div class="p-val" style="color:var(--green)">Real-time</div><div class="p-note">Direct SF API</div></div>
+      <div class="p-row"><div class="p-lbl">Reopened</div><div class="p-val" style="color:var(--green)">&lt;5%</div></div>
+    </div>
+    <div class="pillar">
+      <div class="p-icon">🔒</div>
+      <div class="p-title">Dependable</div>
+      <div class="p-row"><div class="p-lbl">Tracked</div><div class="p-val" style="color:var(--amber)">Jira only</div></div>
+      <div class="p-row"><div class="p-lbl">Phase 1</div><div class="p-val" style="color:var(--green)">100%</div><div class="p-note">Every channel</div></div>
+      <div class="p-row"><div class="p-lbl">No action &gt;24h</div><div class="p-val" style="color:var(--green)">&lt;5%</div></div>
     </div>
   </div>
 
-  <!-- Ecosystem -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">ii.</div><div class="section-title">Across the ecosystem</div></div>
-    <div class="eco">
-      <div class="eco-col">
-        <div class="eco-name">IT-Request</div>
-        <div class="eco-val" style="color:var(--green);">0<span class="eco-unit">h</span></div>
-        <div class="eco-detail">74% under 1hr<br>0% over 72hr</div>
-        <div class="eco-bar" style="background:var(--green);"></div>
+  <!-- v. Movers -->
+  <div class="sh"><div class="sn">iv.</div><div class="st">What moves the numbers</div></div>
+
+  <div class="movers">
+    <div class="mover">
+      <div class="m-num">1</div>
+      <div>
+        <div class="m-title">Deal Pulse on every opp</div>
+        <div class="m-desc">Opp lifecycle, DocuSign, HIQ — 45 tickets/quarter. Ticket never filed. The blocker is surfaced before the rep even asks.</div>
+        <div class="m-meta">Salesforce · Live from validation rules</div>
       </div>
-      <div class="eco-col">
-        <div class="eco-name">Workers' Comp</div>
-        <div class="eco-val" style="color:var(--amber);">16.4<span class="eco-unit">h</span></div>
-        <div class="eco-detail">21% under 1hr<br>6% over 72hr</div>
-        <div class="eco-bar" style="background:var(--amber);"></div>
+      <div class="m-impact"><span class="m-from">17.1h</span><span class="m-arrow">→</span><span class="m-to">0</span></div>
+    </div>
+    <div class="mover">
+      <div class="m-num">2</div>
+      <div>
+        <div class="m-title">Bot with live data</div>
+        <div class="m-desc">Access, uncategorized — 49 tickets/quarter. Instant classification + live context from Snowflake and Salesforce. Answers in seconds, not days.</div>
+        <div class="m-meta">Snowflake · Jira API · Claude Haiku</div>
       </div>
-      <div class="eco-col">
-        <div class="eco-name">BOPS</div>
-        <div class="eco-val" style="color:var(--red);">49.6<span class="eco-unit">h</span></div>
-        <div class="eco-detail">17% under 1hr<br>45% over 72hr</div>
-        <div class="eco-bar" style="background:var(--red);"></div>
+      <div class="m-impact"><span class="m-from">113.5h</span><span class="m-arrow">→</span><span class="m-to">&lt;1m</span></div>
+    </div>
+    <div class="mover">
+      <div class="m-num">3</div>
+      <div>
+        <div class="m-title">Operator decision cards</div>
+        <div class="m-desc">Attribution, merge — 6 tickets/quarter. The investigation is already done. One-click resolve with full context.</div>
+        <div class="m-meta">Snowflake · Claude · Operator console</div>
       </div>
+      <div class="m-impact"><span class="m-from">118.5h</span><span class="m-arrow">→</span><span class="m-to">&lt;4h</span></div>
     </div>
   </div>
 
-  <!-- Pattern breakdown -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">iii.</div><div class="section-title">BOPS by pattern</div></div>
-    <div class="t-label">Median hours to resolve (last 90 days, 100 tickets)</div>
-    <div class="bars">
-      <div class="bar"><div class="bar-label">HIQ</div><div class="bar-track"><div class="bar-fill" style="width:1.2%;background:var(--green);"></div></div><div class="bar-val">3.1h</div><div class="bar-target">&rarr; &lt;1m</div></div>
-      <div class="bar"><div class="bar-label">DocuSign</div><div class="bar-track"><div class="bar-fill" style="width:1.7%;background:var(--green);"></div></div><div class="bar-val">4.3h</div><div class="bar-target">&rarr; &lt;1m</div></div>
-      <div class="bar"><div class="bar-label">Opp Lifecycle</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:var(--amber);"></div></div><div class="bar-val">17.1h</div><div class="bar-target">&rarr; &lt;1m</div></div>
-      <div class="bar"><div class="bar-label">Uncategorized</div><div class="bar-track"><div class="bar-fill" style="width:30.5%;background:var(--red);"></div></div><div class="bar-val">79h</div><div class="bar-target">&rarr; classify</div></div>
-      <div class="bar"><div class="bar-label">Access</div><div class="bar-track"><div class="bar-fill" style="width:43.8%;background:var(--red);"></div></div><div class="bar-val">113.5h</div><div class="bar-target">&rarr; &lt;4h</div></div>
-      <div class="bar"><div class="bar-label">Attribution</div><div class="bar-track"><div class="bar-fill" style="width:45.7%;background:var(--red);"></div></div><div class="bar-val">118.5h</div><div class="bar-target">&rarr; &lt;4h</div></div>
-      <div class="bar"><div class="bar-label">Merge</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--red);"></div></div><div class="bar-val">259.4h</div><div class="bar-target">&rarr; &lt;24h</div></div>
-    </div>
-  </div>
+  <div class="meta" style="margin-top:var(--s5)">Baseline: 100 resolved BOPS tickets, last 90 days, via Jira API. Sep 22 2026.</div>
 
-  <!-- Slack signal -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">iv.</div><div class="section-title">Slack shadow queue</div></div>
-    <div class="t-body" style="margin-bottom:var(--s4);">The volume that never becomes a ticket. Growing faster than Jira.</div>
-    <div class="slack-card">
-      <div class="slack-stat"><div class="slack-val" style="color:var(--ink);">32</div><div class="slack-label">Slack requests/week</div></div>
-      <div class="slack-stat"><div class="slack-val" style="color:var(--amber);">+28%</div><div class="slack-label">Week-over-week</div></div>
-      <div class="slack-stat"><div class="slack-val" style="color:var(--ink);">0.29</div><div class="slack-label">Slack-to-BOPS ratio</div></div>
-      <div class="slack-stat"><div class="slack-val" style="color:var(--red);">?</div><div class="slack-label">Resolution time</div></div>
-    </div>
+  <div class="foot">
+    <span>GTME / ONE FRONT DOOR / KPIS</span>
+    <span>SEP 2026</span>
   </div>
-
-  <!-- Three pillars -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">v.</div><div class="section-title">Three pillars</div></div>
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-title">Fast</div>
-        <div class="pillar-row"><span class="pillar-label">Today</span><span class="pillar-val" style="color:var(--red);">49.6h</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">&lt;1m</span></div>
-        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">self-serve patterns</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Phase 2</span><span class="pillar-val" style="color:var(--green);">&lt;4h</span></div>
-        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">all patterns</span></div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-title">Accurate</div>
-        <div class="pillar-row"><span class="pillar-label">Data lag</span><span class="pillar-val" style="color:var(--red);">24h</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">Real-time</span></div>
-        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">direct SF API</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Reopened</span><span class="pillar-val" style="color:var(--green);">&lt;5%</span></div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-title">Dependable</div>
-        <div class="pillar-row"><span class="pillar-label">Tracked</span><span class="pillar-val" style="color:var(--red);">Jira only</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Phase 1</span><span class="pillar-val" style="color:var(--green);">100%</span></div>
-        <div class="pillar-row"><span class="pillar-label" style="font-size:10px;">every channel</span></div>
-        <div class="pillar-divider"></div>
-        <div class="pillar-row"><span class="pillar-label">Stale &gt;24h</span><span class="pillar-val" style="color:var(--green);">&lt;5%</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- What moves the numbers -->
-  <div class="section">
-    <div class="section-hdr"><div class="section-num">vi.</div><div class="section-title">What moves the numbers</div></div>
-    <div class="impact">
-      <div class="imp">
-        <div class="imp-num">01</div>
-        <div class="imp-body"><div class="imp-name">Deal Pulse on every opp</div><div class="imp-detail">Opp lifecycle, DocuSign, HIQ. 45 tickets/quarter never filed.</div></div>
-        <div class="imp-metric"><div class="imp-from">17.1h</div><div class="imp-arrow">&darr;</div><div class="imp-to">0</div></div>
-      </div>
-      <div class="imp">
-        <div class="imp-num">02</div>
-        <div class="imp-body"><div class="imp-name">Bot with live data</div><div class="imp-detail">Access, uncategorized. 49 tickets/quarter. Instant classification + context.</div></div>
-        <div class="imp-metric"><div class="imp-from">113.5h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;1m</div></div>
-      </div>
-      <div class="imp">
-        <div class="imp-num">03</div>
-        <div class="imp-body"><div class="imp-name">Operator decision cards</div><div class="imp-detail">Attribution, merge. 6 tickets/quarter. Investigation already done.</div></div>
-        <div class="imp-metric"><div class="imp-from">118.5h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;4h</div></div>
-      </div>
-      <div class="imp">
-        <div class="imp-num">04</div>
-        <div class="imp-body"><div class="imp-name">Kill the BOPS portal</div><div class="imp-detail">One channel, one measurement. No more unmeasured shadow queue.</div></div>
-        <div class="imp-metric"><div class="imp-from">49.6h</div><div class="imp-arrow">&darr;</div><div class="imp-to">&lt;4h</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <span>GTME / KPI FRAMEWORK / v2</span>
-    <span>100 resolved BOPS tickets, 90 days, Jira API &middot; Sep 22, 2026</span>
-  </div>
-
 </div>
+
+<script>
+var f=document.getElementById('sf');
+function s(){var h=document.documentElement.scrollHeight-window.innerHeight;f.style.width=(h>0?(window.scrollY/h)*100:0)+'%'}
+window.addEventListener('scroll',s,{passive:true});s();
+</script>
 </body>
 </html>
